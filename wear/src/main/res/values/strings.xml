@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Traxivity</string>
+    <string name="hello">Hello !</string>
+    <string name="share"> Send </string>
+    <string name="activity">Ready to get active ?</string>
+
+</resources>
