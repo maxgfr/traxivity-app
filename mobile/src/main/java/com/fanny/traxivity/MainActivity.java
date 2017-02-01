@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -174,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
             t.setText(text);
         }
 
+        //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.});
+
         createFolder(TRAXIVITY_FOLDER);
         createFolder(DATA_FOLDER);
 
@@ -230,7 +233,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public void createFolder(String nameFolder) {
 
-        File myDir = new File(Environment.getExternalStorageDirectory() + nameFolder);
+        //File myDir = new File(Environment.getExternalStorageDirectory() + nameFolder);
+        File myDir = new File(getFilesDir() + nameFolder);
 
         if (!myDir.exists()) {
             myDir.mkdir();
@@ -243,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
      */
 
     public void deleteOldFiles(){
-        File folder = new File(Environment.getExternalStorageDirectory() + DATA_FOLDER);
+        File folder = new File(getFilesDir() + DATA_FOLDER);
 
         if (folder.isDirectory()) {
             for (File f : folder.listFiles()) {
@@ -336,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
 
         String date = dateFormat(day);
 
-        File file = new File(Environment.getExternalStorageDirectory() + DATA_FOLDER + "/" + date +".csv");
+        File file = new File(getFilesDir() + DATA_FOLDER + "/" + date +".csv");
         System.out.println("Reading file: "+file.getPath());
 
         if (file.exists()) {

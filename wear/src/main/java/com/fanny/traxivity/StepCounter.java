@@ -58,7 +58,7 @@ public class StepCounter {
         //ApproximationFunctionType functionType = ApproximationFunctionType.BUTTERWORTH;
         FilterPassType filterPassType = FilterPassType.lowpass;
         int filterOrder = 5;
-        double fcf1 = 0.008;
+        double fcf1 = 0.02;
         double fcf2 = 0.0;
 
         IirFilterCoefficients coeffs = IirFilterDesignExstrom.design(filterPassType, filterOrder, fcf1, fcf2);

@@ -175,7 +175,7 @@ public class ListenerService extends WearableListenerService implements GoogleAp
 
         if (isExternalStorageWritable()) {
 
-            File file = new File(Environment.getExternalStorageDirectory().getPath() + DATA_FOLDER, fileName+".csv");
+            File file = new File(getFilesDir() + DATA_FOLDER, fileName+".csv");
 
             FileWriter filewriter = null;
 

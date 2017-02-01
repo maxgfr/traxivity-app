@@ -426,6 +426,7 @@ public class SensorService extends Service implements SensorEventListener {
 
         int inactiveThreshold = 660;
         String data = "";
+        //event.
         long time = System.currentTimeMillis();
         data += Long.toString(time);
         data += getAccelerometerData(event);
