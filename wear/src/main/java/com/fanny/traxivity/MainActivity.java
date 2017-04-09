@@ -1,6 +1,7 @@
 package com.fanny.traxivity;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.Environment;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +22,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.wearable.DataEventBuffer;
 
 import org.opencv.android.OpenCVLoader;
@@ -34,7 +39,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends Activity {
+public class MainActivity extends WearableActivity {
     /**
      * The app main folder
      */
@@ -70,6 +75,8 @@ public class MainActivity extends Activity {
      * The SharedPreferences used to save the user name
      */
     private SharedPreferences settings;
+
+    private GoogleApiClient mApiClient;
 
 
 
@@ -107,6 +114,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setAmbientEnabled();
+
 
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -140,9 +149,11 @@ public class MainActivity extends Activity {
         if (rawToFile("model", getResources().openRawResource(R.raw.model)) && rawToFile("meansigma", getResources().openRawResource(R.raw.meansigma))){
             System.out.println("Raw files found....");
             startService(new Intent(MainActivity.this, SensorService.class));
+            //System.out.println("Starting ActivityRecogniserService");
+            //startService(new Intent(MainActivity.this, ActivityRecogniserService.class));
         }else{
             Button button = (Button)findViewById(R.id.share);
-            button.setEnabled(false);
+            //button.setEnabled(false);
         }
 
 
@@ -164,7 +175,7 @@ public class MainActivity extends Activity {
 
         startService(new Intent(MainActivity.this, SendFileService.class));
         stopService(new Intent(MainActivity.this, SendFileService.class));
-        stopService(new Intent(MainActivity.this, SensorService.class));
+        //stopService(new Intent(MainActivity.this, ActivityRecogniserService.class));
 
     }
 
@@ -350,6 +361,5 @@ public class MainActivity extends Activity {
             Log.d("OpenCV", "OpenCV library found inside package. Using it!");
         }
     }
-
 
 }

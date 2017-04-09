@@ -248,7 +248,8 @@ class SendToDataLayerThread extends Thread {
             putDMR.getDataMap().putAsset("data", asset);
             System.out.println("Sending asset: " + asset.getUri());
         }
-        PutDataRequest request = putDMR.asPutDataRequest().setUrgent();
+        //PutDataRequest request = putDMR.asPutDataRequest().setUrgent();
+        PutDataRequest request = putDMR.asPutDataRequest();
 
         DataApi.DataItemResult result = Wearable.DataApi.putDataItem(googleClient, request).await();
         if (result.getStatus().isSuccess()) {

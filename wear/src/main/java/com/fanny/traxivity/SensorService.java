@@ -1,5 +1,6 @@
 package com.fanny.traxivity;
 
+import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -264,8 +265,11 @@ public class SensorService extends Service implements SensorEventListener {
     private Handler handler;
 
 
+
     public SensorService() {
+        //super("SensorService");
     }
+
 
     /**
      * Define how the handler will process messages
@@ -283,6 +287,11 @@ public class SensorService extends Service implements SensorEventListener {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
+    /*@Override
+    protected void onHandleIntent(Intent intent) {
+
+    }*/
 
 
     @Override
@@ -708,27 +717,6 @@ public class SensorService extends Service implements SensorEventListener {
         Intent intent = new Intent("activity");
         intent.putExtra("activity", activity);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
-    }
-
-
-    private class DisplayToast implements Runnable{
-
-        String text;
-        Context context;
-        int duration;
-
-        public DisplayToast(Context context, String text, int duration){
-            this.text = text;
-            this.context = context;
-            this.duration = duration;
-        }
-
-        public void run(){
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.setGravity(Gravity.BOTTOM, 0, 0);
-            toast.show();
-        }
 
     }
 

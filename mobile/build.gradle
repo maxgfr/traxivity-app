@@ -29,6 +29,6 @@ dependencies {
     wearApp project(':wear')
     testCompile 'junit:junit:4.12'
     compile 'com.google.android.gms:play-services:9.2.0'
-    compile 'com.android.support:design:24.0.0'
+    compile 'com.android.support:design:23.0.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
 }

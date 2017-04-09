@@ -63,6 +63,16 @@ public class MainActivity extends AppCompatActivity {
     private static final int AGE_FILE = -7;
 
 
+    /*
+    Activity Integer Labels:
+    RUNNING = 0
+    INACTIVE = 1
+    STAIRS = 2
+    STANDING = 3
+    WALKING = 4
+     */
+
+
     /**
      * The running label
      */
@@ -184,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
 
         visualization(TODAY);
 
+        startService(new Intent(this, ActivityRecognitionService.class));
+
     }
 
 
@@ -290,12 +302,13 @@ public class MainActivity extends AppCompatActivity {
 
         visualizedDate.setTime(day.getTime());
 
-        //"enable" or "disable" the back and forward button if needed
+        //"disable" forward button if date being visualised in today
         if(dateFormat(visualizedDate).equals(dateFormat(TODAY))){
             Button button = (Button)findViewById(R.id.after);
             button.setEnabled(false);
         }
 
+        //"disable" back button if date being visualised is older than 7 days ago
         if(tooOld(day)) {
             Button button = (Button)findViewById(R.id.before);
             button.setEnabled(false);
@@ -307,6 +320,8 @@ public class MainActivity extends AppCompatActivity {
         //Launch the dateExtraction, setChart and setActivitySummary
         dataExtraction(day);
         setChart();
+        System.out.println("Total activity: "+totalActivity);
+        System.out.println("Total walking: "+totalWalking);
         setActivitySummary();
 
 
@@ -348,6 +363,7 @@ public class MainActivity extends AppCompatActivity {
             String line;
             String cvsSplitBy = ",";
 
+            Long last_timestamp = -1l;
             try {
                 br = new BufferedReader(new FileReader(file));
                 while ((line = br.readLine()) != null) {
@@ -362,26 +378,40 @@ public class MainActivity extends AppCompatActivity {
                         time.setTimeInMillis(timestamp);
                         //System.out.println("Date: "+date);
                         //System.out.println("Timestamp: "+dateFormat(time));
+
+
                         if (date.equals(dateFormat(time))){
 
                             hour=getHour(timestamp);
                             activity = Integer.parseInt(splitLine[2]);
-                            dailyActivity[hour][activity]++;
-                            if (activity == RUNNING){
-                                totalRunning++;
-                                totalActivity++;
-                            }
-                            if (activity == STAIRS){
-                                totalStairs++;
-                                totalActivity++;
-                            }
-                            if (activity == WALKING){
-                                totalWalking++;
-                                totalActivity++;
+
+                            if (isActive(activity)) {
+
+                                long increment = 0;
+                                if (last_timestamp >= 0) {
+                                    increment = (timestamp - last_timestamp) / 1000;
+                                }
+
+                                System.out.println("increment: "+increment);
+
+                                dailyActivity[hour][activity] += increment;
+                                totalActivity += increment;
+
+                                if (activity == RUNNING) {
+                                    totalRunning += increment;
+                                }
+                                if (activity == STAIRS) {
+                                    totalStairs += increment;
+                                }
+                                if (activity == WALKING) {
+                                    totalWalking += increment;
+                                }
+
+                                steps = Integer.parseInt(splitLine[3]);
+                                totalSteps += steps;
                             }
 
-                            steps = Integer.parseInt(splitLine[3]);
-                            totalSteps += steps;
+                            last_timestamp = timestamp;
 
                         }else{
                             System.out.println("wrong day: " + date);
@@ -406,6 +436,16 @@ public class MainActivity extends AppCompatActivity {
         }else{
             System.out.println("no data for today " + date);
         }
+    }
+
+
+    public boolean isActive(int activity){
+        if (activity == RUNNING || activity == WALKING || activity == STAIRS){
+            return true;
+        }else{
+            return false;
+        }
+
     }
 
 
@@ -648,9 +688,9 @@ public class MainActivity extends AppCompatActivity {
         List<BarEntry> entries = new ArrayList<>();
 
         for(int i = 0 ; i < 24 ; i++) {
-            float minutesWalking = (float)dailyActivity[i][WALKING] / 6;
-            float minutesStairs = (float)dailyActivity[i][STAIRS] / 6;
-            float minutesRunning = (float)dailyActivity[i][RUNNING] / 6;
+            float minutesWalking = (float)dailyActivity[i][WALKING] / 60;
+            float minutesStairs = (float)dailyActivity[i][STAIRS] / 60;
+            float minutesRunning = (float)dailyActivity[i][RUNNING] / 60;
 
             entries.add(new BarEntry(i, new float[]{minutesWalking, minutesStairs, minutesRunning}));
         }
@@ -751,18 +791,23 @@ public class MainActivity extends AppCompatActivity {
      */
     public String timeToText(int time){
 
-        int h = (time / 360);
-        int min = (time % 360) / 6;
-        int sec = (time % 360) % 6;
+        //int h = (time / 360);
+        //int min = (time % 360) / 6;
+        //int sec = (time % 360) % 6;
+        int h = time/3600;
+        int r = time - (h * 3600);
+        int min = r/60;
+        r = r - (min * 60);
+        int sec = r;
 
         String text;
 
         if (h != 0){
-            text = Integer.toString(min) +" h " + Integer.toString(min) +" min " +  Integer.toString(sec) + "0 sec";
+            text = Integer.toString(min) +" h " + Integer.toString(min) +" min " +  Integer.toString(sec) + " sec";
         }else if (min != 0){
-            text = Integer.toString(min) +" min " +  Integer.toString(sec) + "0 sec";
+            text = Integer.toString(min) +" min " +  Integer.toString(sec) + " sec";
         }else if (sec != 0){
-            text = Integer.toString(sec) + "0 sec";
+            text = Integer.toString(sec) + " sec";
         }else{
             text = "0 sec";
         }

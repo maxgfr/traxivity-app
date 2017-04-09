@@ -173,7 +173,7 @@ public class ListenerService extends WearableListenerService implements GoogleAp
 
     public void writeToFile(String fileName, String data){
 
-        if (isExternalStorageWritable()) {
+        /* if (isExternalStorageWritable()) { */
 
             File file = new File(getFilesDir() + DATA_FOLDER, fileName+".csv");
 
@@ -197,13 +197,13 @@ public class ListenerService extends WearableListenerService implements GoogleAp
                 }
             }
 
-        } else {
+        /*} else {
             CharSequence text = "The external storage is not writable";
             int duration = Toast.LENGTH_SHORT;
 
             Toast toast = Toast.makeText(this, text, duration);
             toast.show();
-        }
+        } */
     }
 
     /**
