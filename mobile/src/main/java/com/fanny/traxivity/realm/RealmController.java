@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Fragment;
 
+import com.fanny.traxivity.model.Day;
+
 import io.realm.Realm;
 
 /**
@@ -45,5 +47,26 @@ public class RealmController {
 
     public Realm getRealm() {
         return realm;
+    }
+
+    public void refresh() {
+        realm.setAutoRefresh(true);
+    }
+
+    public void clearAll() {
+        realm.beginTransaction();
+        realm.delete(Day.class);
+        realm.commitTransaction();
+    }
+
+    /*
+        Day database
+     */
+    public Day getDay(String id) {
+        return realm.where(Day.class).equalTo("idDay", id).findFirst();
+    }
+
+    public boolean hasDay() {
+        return !realm.where(Day.class).findAll().isEmpty();
     }
 }

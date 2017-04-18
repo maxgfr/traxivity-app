@@ -10,22 +10,12 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class Day extends RealmObject {
-    @PrimaryKey
-    private String idDay;
 
     private Date startTime;
 
     private double duration;
 
     private String activity;
-
-    public String getIdDay() {
-        return idDay;
-    }
-
-    public void setIdDay(String idDay) {
-        this.idDay = idDay;
-    }
 
     public Date getStartTime() {
         return startTime;
@@ -51,8 +41,7 @@ public class Day extends RealmObject {
         this.activity = activity.toString();
     }
 
-    public Day(String idDay, Date startTime, double duration, String activity) {
-        this.idDay = idDay;
+    public Day(Date startTime, double duration, String activity) {
         this.startTime = startTime;
         this.duration = duration;
         this.activity = activity;
