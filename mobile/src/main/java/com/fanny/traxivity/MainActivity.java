@@ -15,12 +15,15 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.fanny.traxivity.model.Activity;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -43,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -71,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
     STANDING = 3
     WALKING = 4
      */
-
 
     /**
      * The running label
@@ -173,6 +177,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Realm.init(getApplicationContext());
+        RealmConfiguration config = new RealmConfiguration.
+                Builder().
+                name(Realm.DEFAULT_REALM_NAME).
+                deleteRealmIfMigrationNeeded().
+                build();
+        Realm.setDefaultConfiguration(config);
 
         Button button = (Button)findViewById(R.id.after);
         button.setEnabled(false);
@@ -450,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-/*
+/**
     public void dataExtraction(Calendar day){
         int hour;
         int activity;
@@ -869,6 +880,13 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        setTitle(R.string.settings);
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
     /**
      * Receive intents sent by sendBroadcast() in the ListenerService
@@ -886,5 +904,6 @@ public class MainActivity extends AppCompatActivity {
             visualization(TODAY);
         }
     };
+
 
 }
