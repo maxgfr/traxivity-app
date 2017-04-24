@@ -4,9 +4,17 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Fragment;
 
-import com.fanny.traxivity.model.Day;
+import com.fanny.traxivity.ActivityRecogniserService;
+import com.fanny.traxivity.model.EActivity;
+import com.fanny.traxivity.model.TActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * Created by huextrat on 18/04/2017.
@@ -53,20 +61,4 @@ public class RealmController {
         realm.setAutoRefresh(true);
     }
 
-    public void clearAll() {
-        realm.beginTransaction();
-        realm.delete(Day.class);
-        realm.commitTransaction();
-    }
-
-    /*
-        Day database
-     */
-    public Day getDay(String id) {
-        return realm.where(Day.class).equalTo("idDay", id).findFirst();
-    }
-
-    public boolean hasDay() {
-        return !realm.where(Day.class).findAll().isEmpty();
-    }
 }

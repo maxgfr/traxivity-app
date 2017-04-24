@@ -3,13 +3,12 @@ package com.fanny.traxivity.model;
 import java.util.Date;
 
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by huextrat on 18/04/2017.
  */
 
-public class Day extends RealmObject {
+public class TActivity extends RealmObject {
 
     private Date startTime;
 
@@ -33,21 +32,21 @@ public class Day extends RealmObject {
         this.duration = duration;
     }
 
-    public Activity getActivity() {
-        return Activity.valueOf(activity);
+    public String getActivity() {
+        return activity;
     }
 
-    public void setActivity(Activity activity) {
+    public void setActivity(String activity) {
         this.activity = activity.toString();
     }
 
-    public Day(Date startTime, double duration, String activity) {
+    public TActivity(Date startTime, double duration, String activity) {
         this.startTime = startTime;
         this.duration = duration;
         this.activity = activity;
     }
 
-    public Day(){
+    public TActivity(){
 
     }
 }

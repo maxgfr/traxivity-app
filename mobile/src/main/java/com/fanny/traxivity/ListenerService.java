@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -173,8 +174,8 @@ public class ListenerService extends WearableListenerService implements GoogleAp
 
     public void writeToFile(String fileName, String data){
 
+        Log.d("DATA",data);
         /* if (isExternalStorageWritable()) { */
-
             File file = new File(getFilesDir() + DATA_FOLDER, fileName+".csv");
 
             FileWriter filewriter = null;

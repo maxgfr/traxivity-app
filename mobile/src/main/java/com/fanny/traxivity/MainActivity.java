@@ -10,11 +10,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -23,7 +22,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.fanny.traxivity.model.Activity;
+import com.fanny.traxivity.model.ActivityManager;
+import com.fanny.traxivity.model.EActivity;
+import com.fanny.traxivity.model.TActivity;
+import com.fanny.traxivity.realm.RealmController;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -36,18 +38,16 @@ import com.google.android.gms.wearable.DataEventBuffer;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -206,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
         visualization(TODAY);
 
         startService(new Intent(this, ActivityRecognitionService.class));
-
     }
 
 
@@ -233,6 +232,13 @@ public class MainActivity extends AppCompatActivity {
         visualization(visualizedDate);
         Button button = (Button)findViewById(R.id.after);
         button.setEnabled(true);
+    }
+
+    public void clearDB(View view){
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.delete(TActivity.class);
+        realm.commitTransaction();
     }
 
     /**
