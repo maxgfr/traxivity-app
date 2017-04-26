@@ -17,14 +17,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    private DatabaseReference mDataBase;
     private static final String TAG = "SignupActivity";
 
     EditText _nameText;
     EditText _emailText;
     EditText _passwordText;
+    EditText _confirmPasswordText;
     Button _signupButton;
     TextView _loginLink;
 
@@ -36,6 +40,7 @@ public class SignupActivity extends AppCompatActivity {
         _nameText = (EditText) findViewById(R.id.input_name);
         _emailText = (EditText) findViewById(R.id.input_email);
         _passwordText = (EditText) findViewById(R.id.input_password);
+        _confirmPasswordText = (EditText) findViewById(R.id.confirm_input_password);
         _signupButton = (Button) findViewById(R.id.btn_signup);
         _loginLink = (TextView) findViewById(R.id.link_login);
 
@@ -49,8 +54,10 @@ public class SignupActivity extends AppCompatActivity {
         _loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
+                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(intent);
                 finish();
+                overridePendingTransition(R.animator.push_left_in, R.animator.push_left_out);
             }
         });
 
@@ -73,7 +80,7 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
+        final String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
@@ -82,6 +89,9 @@ public class SignupActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            mDataBase = FirebaseDatabase.getInstance().getReference();
+                            mDataBase.child("users").child(userId).setValue(name);
                             Intent intent = new Intent(SignupActivity.this, MainActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
@@ -95,16 +105,8 @@ public class SignupActivity extends AppCompatActivity {
                 });
     }
 
-
-    public void onSignupSuccess() {
-        _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
-    }
-
     public void onSignupFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
         _signupButton.setEnabled(true);
     }
 
@@ -114,6 +116,7 @@ public class SignupActivity extends AppCompatActivity {
         String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
+        String confirmPassword = _confirmPasswordText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
             _nameText.setError("at least 3 characters");
@@ -132,8 +135,12 @@ public class SignupActivity extends AppCompatActivity {
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
             _passwordText.setError("between 4 and 10 alphanumeric characters");
             valid = false;
+        } else if(!password.equals(confirmPassword)) {
+            _confirmPasswordText.setError("password confirmation incorrect");
+            valid = false;
         } else {
             _passwordText.setError(null);
+            _confirmPasswordText.setError(null);
         }
 
         return valid;

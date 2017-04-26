@@ -11,11 +11,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +33,12 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,6 +55,7 @@ import io.realm.RealmResults;
 
 
 public class MainActivity extends AppCompatActivity {
+    private DatabaseReference mDataBase;
     /**
      * The app main folder
      */
@@ -155,7 +164,6 @@ public class MainActivity extends AppCompatActivity {
      * Delete the old files
      * launch the visualization for TODAY
      * @see MainActivity#dataReceiver
-     * @see MainActivity#showDialog()
      * @see MainActivity#createFolder(String)
      * @see MainActivity#deleteOldFiles()
      * @see MainActivity#visualization(Calendar)
@@ -176,13 +184,26 @@ public class MainActivity extends AppCompatActivity {
         Button button = (Button)findViewById(R.id.after);
         button.setEnabled(false);
 
-        if(settings.getString("name", null)==null){
-            showDialog();
-        }else{
-            TextView t=(TextView)findViewById(R.id.welcome);
-            String text = "Hello " + settings.getString("name", "") + " !";
-            t.setText(text);
-        }
+        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDataBase = FirebaseDatabase.getInstance().getReference().child("users");
+        mDataBase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                    if(child.getKey().equals(userId)){
+                        String username = child.getValue().toString();
+                        TextView t=(TextView)findViewById(R.id.welcome);
+                        String text = "Hello " + username + " !";
+                        t.setText(text);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.});
 
@@ -195,17 +216,6 @@ public class MainActivity extends AppCompatActivity {
 
         startService(new Intent(this, ActivityRecognitionService.class));
     }
-
-
-    /**
-     * The method behind the "settings" button
-     * @see MainActivity#showDialog()
-     * @param view current View
-     */
-    public void changeName(View view){
-        showDialog();
-    }
-
 
 
     /**
@@ -825,53 +835,25 @@ public class MainActivity extends AppCompatActivity {
         return df.format(c.getTime());
     }
 
-    /**
-     * Display an alertDialog that asks the name of the user and saves it in the sharedPreferences
-     * Send the new name to the wear through the sendFileService
-     * When the name is changed, change the textView "welcome" withe the new name
-     * @see SendFileService
-     */
-    public void showDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Hello");
-        alert.setMessage("What's your name ?");
-        final EditText input = new EditText(MainActivity.this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setLayoutParams(lp);
-        alert.setView(input);
 
-        final SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-
-        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                editor.putString("name", input.getText().toString());
-                editor.apply();
-
-                dialog.dismiss();
-
-                startService(new Intent(MainActivity.this, SendFileService.class));
-
-                stopService(new Intent(MainActivity.this, SendFileService.class));
-
-                TextView t = (TextView) findViewById(R.id.welcome);
-                String text = "Hello " + settings.getString("name", "") + " !";
-                t.setText(text);
-            }
-        });
-
-        AlertDialog dialog = alert.create();
-        dialog.show();
-
-    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        setTitle(R.string.settings);
+        setTitle(R.string.app_name);
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
         return true;
     }
 

@@ -24,16 +24,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1.00" />
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_settings_black_24dp"
-            android:text="@string/changeName"
-            android:onClick="changeName"
-            android:layout_gravity="end"
-            android:contentDescription="@string/settings" />
-
-
     </LinearLayout>
 
 

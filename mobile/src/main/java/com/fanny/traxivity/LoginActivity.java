@@ -53,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
                 startActivityForResult(intent, REQUEST_SIGNUP);
+                finish();
+                overridePendingTransition(R.animator.push_left_in, R.animator.push_left_out);
             }
         });
 
@@ -99,7 +101,6 @@ public class LoginActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 });
-
     }
 
 
@@ -121,14 +122,8 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        finish();
-    }
-
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
     }
 
