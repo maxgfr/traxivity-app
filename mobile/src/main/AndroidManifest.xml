@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".MainActivity" android:theme="@style/AppTheme" />
         <activity android:name=".SignupActivity" android:theme="@style/AppTheme" />
+        <activity android:name=".ResetActivity" android:theme="@style/AppTheme" />
 
         <service android:name=".ListenerService">
             <intent-filter>
