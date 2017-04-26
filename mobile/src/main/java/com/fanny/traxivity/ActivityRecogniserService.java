@@ -9,10 +9,6 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.fanny.traxivity.model.ActivityManager;
-import com.fanny.traxivity.model.EActivity;
-import com.fanny.traxivity.model.TActivity;
-import com.fanny.traxivity.realm.RealmController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
@@ -56,12 +52,7 @@ public class ActivityRecogniserService extends IntentService{
             System.out.println("Activity: "+strActivity);
 
             //--------------------------------------------------------------------------
-            ActivityManager manager = new ActivityManager();
-            Realm realm = Realm.getDefaultInstance();
-            Date d = new Date();
-            manager.insertActivity(realm,d,d.getTime()-lastDateTime,strActivity);
-            lastDateTime = d.getTime();
-            Log.d("Content",manager.selectAll(realm).toString());
+
             //--------------------------------------------------------------------------
 
             Context context = getApplicationContext();

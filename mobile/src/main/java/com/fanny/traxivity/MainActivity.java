@@ -22,10 +22,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.fanny.traxivity.model.ActivityManager;
-import com.fanny.traxivity.model.EActivity;
-import com.fanny.traxivity.model.TActivity;
-import com.fanny.traxivity.realm.RealmController;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -177,14 +173,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Realm.init(getApplicationContext());
-        RealmConfiguration config = new RealmConfiguration.
-                Builder().
-                name(Realm.DEFAULT_REALM_NAME).
-                deleteRealmIfMigrationNeeded().
-                build();
-        Realm.setDefaultConfiguration(config);
-
         Button button = (Button)findViewById(R.id.after);
         button.setEnabled(false);
 
@@ -232,13 +220,6 @@ public class MainActivity extends AppCompatActivity {
         visualization(visualizedDate);
         Button button = (Button)findViewById(R.id.after);
         button.setEnabled(true);
-    }
-
-    public void clearDB(View view){
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.delete(TActivity.class);
-        realm.commitTransaction();
     }
 
     /**

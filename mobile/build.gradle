@@ -28,8 +28,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     wearApp project(':wear')
-    testCompile 'junit:junit:4.12'
     compile 'com.google.android.gms:play-services:10.2.1'
     compile 'com.android.support:design:24.0.0'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
+    compile 'com.google.firebase:firebase-auth:10.0.1'
+    testCompile 'junit:junit:4.12'
 }
+
+apply plugin: 'com.google.gms.google-services'
