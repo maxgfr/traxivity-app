@@ -1,25 +1,22 @@
-package com.fanny.traxivity;
+package com.fanny.traxivity.View;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.fanny.traxivity.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class ResetActivity extends AppCompatActivity {
-    private static final int REQUEST_SIGNUP = 0;
+    private static final int REQUEST_RESET = 0;
     private FirebaseAuth auth;
     EditText _emailText;
     TextView _signupLink;
@@ -49,7 +46,7 @@ public class ResetActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivityForResult(intent, REQUEST_RESET);
                 finish();
                 overridePendingTransition(R.animator.push_left_in, R.animator.push_left_out);
             }
@@ -60,7 +57,7 @@ public class ResetActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivityForResult(intent, REQUEST_RESET);
                 finish();
                 overridePendingTransition(R.animator.push_left_in, R.animator.push_left_out);
             }
@@ -90,5 +87,14 @@ public class ResetActivity extends AppCompatActivity {
                     }
                 });
         progressDialog.dismiss();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RESET) {
+            if (resultCode == RESULT_OK) {
+                this.finish();
+            }
+        }
     }
 }

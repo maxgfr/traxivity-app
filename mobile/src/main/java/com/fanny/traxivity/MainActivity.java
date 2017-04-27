@@ -1,9 +1,7 @@
 package com.fanny.traxivity;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.IntentFilter;
@@ -11,19 +9,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.fanny.traxivity.Model.ActivityRecognitionService;
+import com.fanny.traxivity.Model.CustomMarkerView;
+import com.fanny.traxivity.Model.ListenerService;
+import com.fanny.traxivity.View.LoginActivity;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -34,6 +32,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.wearable.DataEventBuffer;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,12 +45,7 @@ import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmResults;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -191,11 +185,11 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child: dataSnapshot.getChildren()) {
                     if(child.getKey().equals(userId)){
-                        String username = child.getValue().toString();
+                        String username = child.child("username").getValue().toString();
                         TextView t=(TextView)findViewById(R.id.welcome);
                         String text = "Hello " + username + " !";
                         t.setText(text);
-                    }
+                   }
                 }
             }
 

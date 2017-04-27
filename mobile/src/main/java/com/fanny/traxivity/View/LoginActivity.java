@@ -1,4 +1,4 @@
-package com.fanny.traxivity;
+package com.fanny.traxivity.View;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fanny.traxivity.MainActivity;
+import com.fanny.traxivity.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -22,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
+    private static final int REQUEST_LOGIN = 0;
 
     EditText _emailText;
     EditText _passwordText;
@@ -54,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivityForResult(intent, REQUEST_LOGIN);
                 finish();
                 overridePendingTransition(R.animator.push_left_in, R.animator.push_left_out);
             }
@@ -65,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ResetActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
+                startActivityForResult(intent, REQUEST_LOGIN);
                 finish();
                 overridePendingTransition(R.animator.push_left_in, R.animator.push_left_out);
             }
@@ -118,11 +120,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
+        if (requestCode == REQUEST_LOGIN) {
             if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
                 this.finish();
             }
         }

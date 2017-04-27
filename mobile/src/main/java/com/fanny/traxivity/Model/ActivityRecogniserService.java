@@ -1,24 +1,20 @@
-package com.fanny.traxivity;
+package com.fanny.traxivity.Model;
 
-import android.app.IntentService;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
+import com.fanny.traxivity.DbObject.DbActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 /**
  * Created by Sadiq on 01/03/2017.
@@ -29,6 +25,7 @@ public class ActivityRecogniserService extends IntentService{
     private GoogleApiClient mApiClient;
     private Handler handler;
     private long lastDateTime = new Date().getTime();
+    private ActivityManager manager = new ActivityManager();
 
     public ActivityRecogniserService(){
         super("ActivityRecogniserService");
@@ -52,7 +49,10 @@ public class ActivityRecogniserService extends IntentService{
             System.out.println("Activity: "+strActivity);
 
             //--------------------------------------------------------------------------
-
+            Date d = new Date();
+            DbActivity myActivity = new DbActivity(d,d.getTime()-lastDateTime,strActivity);
+            manager.insertActivity(myActivity);
+            lastDateTime = d.getTime();
             //--------------------------------------------------------------------------
 
             Context context = getApplicationContext();

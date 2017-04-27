@@ -1,4 +1,4 @@
-package com.fanny.traxivity;
+package com.fanny.traxivity.Model;
 
 import android.content.Context;
 import android.view.Gravity;
