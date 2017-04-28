@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.fanny.traxivity.Database.*;
@@ -14,15 +15,15 @@ import com.google.android.gms.location.DetectedActivity;
 
 import java.util.Date;
 
+import static com.fanny.traxivity.Model.SaveLastActivity.lastActivity;
+
 /**
  * Created by Sadiq on 01/03/2017.
  */
 
 public class ActivityRecogniserService extends IntentService{
 
-    private GoogleApiClient mApiClient;
     private Handler handler;
-    private long lastDateTime = new Date().getTime();
     private com.fanny.traxivity.Database.ActivityManager manager = new com.fanny.traxivity.Database.ActivityManager();
 
     public ActivityRecogniserService(){
@@ -31,9 +32,7 @@ public class ActivityRecogniserService extends IntentService{
 
     public void onCreate(){
         super.onCreate();
-
         handler = new Handler(Looper.getMainLooper());
-
     }
 
     @Override
@@ -47,10 +46,19 @@ public class ActivityRecogniserService extends IntentService{
             System.out.println("Activity: "+strActivity);
 
             //--------------------------------------------------------------------------
-            Date d = new Date();
-            DbActivity myActivity = new DbActivity(d,d.getTime()-lastDateTime,strActivity);
-            manager.insertActivity(myActivity);
-            lastDateTime = d.getTime();
+            if(!strActivity.equals("Unknown")) {
+                Date d = new Date();
+
+                if(!strActivity.equals(lastActivity.getActivity().toString()) || strActivity.equals(ActivityType.Null.toString())) {
+                    DbActivity myActivity = new DbActivity(d, d, (d.getTime() - lastActivity.getStartTime().getTime())/1000, ActivityType.valueOf(strActivity), 0);
+                    manager.insertActivity(myActivity);
+                    lastActivity = myActivity;
+                }
+                else {
+                    DbActivity myActivity = new DbActivity(lastActivity.getStartTime(), d, (d.getTime() - lastActivity.getStartTime().getTime())/1000, ActivityType.valueOf(strActivity), 0);
+                    manager.addDurationLast(myActivity);
+                }
+            }
             //--------------------------------------------------------------------------
 
             Context context = getApplicationContext();
@@ -63,12 +71,12 @@ public class ActivityRecogniserService extends IntentService{
 
     private String getActivityName(int activity){
         switch(activity){
-            case DetectedActivity.IN_VEHICLE: return "In Vehicle";
+            case DetectedActivity.IN_VEHICLE: return "InVehicle";
             case DetectedActivity.ON_BICYCLE: return "Cycling";
             case DetectedActivity.RUNNING: return "Running";
             case DetectedActivity.WALKING: return "Walking";
             case DetectedActivity.STILL: return "Inactive";
-            case DetectedActivity.ON_FOOT: return "On Foot";
+            case DetectedActivity.ON_FOOT: return "OnFoot";
             default: return "Unknown";
         }
     }

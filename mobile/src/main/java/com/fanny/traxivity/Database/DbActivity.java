@@ -9,25 +9,39 @@ import java.util.Date;
 public class DbActivity {
 
     private Date startTime;
+    private Date endTime;
     private double duration;
-    private String activity;
+    private ActivityType activity;
+    private int nbSteps;
+
+    public int getNbSteps() {
+        return nbSteps;
+    }
 
     public Date getStartTime() {
         return startTime;
     }
 
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setDuration(double duration){ this.duration = duration; }
+
     public double getDuration() {
         return duration;
     }
 
-    public String getActivity() {
+    public ActivityType getActivity() {
         return activity;
     }
 
-    public DbActivity(Date startTime, double duration, String activity) {
+    public DbActivity(Date startTime, Date endTime, double duration, ActivityType activity, int nbSteps) {
+        this.endTime = endTime;
         this.startTime = startTime;
         this.duration = duration;
         this.activity = activity;
+        this.nbSteps = nbSteps;
     }
 
     public DbActivity(){
