@@ -1,4 +1,4 @@
-package com.fanny.traxivity.DbObject;
+package com.fanny.traxivity.Database;
 
 import java.util.Date;
 

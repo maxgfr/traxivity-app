@@ -7,12 +7,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
-import com.fanny.traxivity.DbObject.DbActivity;
+import com.fanny.traxivity.Database.*;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Date;
 
@@ -25,7 +23,7 @@ public class ActivityRecogniserService extends IntentService{
     private GoogleApiClient mApiClient;
     private Handler handler;
     private long lastDateTime = new Date().getTime();
-    private ActivityManager manager = new ActivityManager();
+    private com.fanny.traxivity.Database.ActivityManager manager = new com.fanny.traxivity.Database.ActivityManager();
 
     public ActivityRecogniserService(){
         super("ActivityRecogniserService");

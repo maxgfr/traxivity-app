@@ -15,15 +15,6 @@
         android:layout_height="wrap_content"
         android:weightSum="1">
 
-        <TextView
-            android:id="@+id/welcome"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.WindowTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/welcome"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1.00" />
-
     </LinearLayout>
 
 
@@ -189,34 +180,32 @@
                 android:layout_gravity="center_horizontal" />
         </LinearLayout>
 
-
-
     </LinearLayout>
 
-<RelativeLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1">
-
-    <Button
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/before"
-        android:text="@string/before"
-        android:onClick="before" />
+        android:weightSum="1">
 
-    <Button
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:id="@+id/after"
-        android:text="@string/after"
-        android:onClick="after"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/before"
+            android:text="@string/before"
+            android:onClick="before" />
 
-</RelativeLayout>
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/after"
+            android:text="@string/after"
+            android:onClick="after"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
 
 
 </LinearLayout>

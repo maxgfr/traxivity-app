@@ -168,36 +168,13 @@ public class MainActivity extends AppCompatActivity {
 
         settings = PreferenceManager.getDefaultSharedPreferences(this);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(dataReceiver,
-                new IntentFilter("newData"));
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(dataReceiver, new IntentFilter("newData"));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Button button = (Button)findViewById(R.id.after);
         button.setEnabled(false);
-
-        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDataBase = FirebaseDatabase.getInstance().getReference().child("users");
-        mDataBase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child: dataSnapshot.getChildren()) {
-                    if(child.getKey().equals(userId)){
-                        String username = child.child("username").getValue().toString();
-                        TextView t=(TextView)findViewById(R.id.welcome);
-                        String text = "Hello " + username + " !";
-                        t.setText(text);
-                   }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.});
 
@@ -832,7 +809,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        setTitle(R.string.app_name);
+        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDataBase = FirebaseDatabase.getInstance().getReference().child("users");
+        mDataBase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                    if(child.getKey().equals(userId)){
+                        String username = child.child("username").getValue().toString();
+                        setTitle("Hello " + username + " !");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_main, menu);
         return true;
