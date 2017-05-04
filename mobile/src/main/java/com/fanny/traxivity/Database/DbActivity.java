@@ -26,6 +26,10 @@ public class DbActivity {
         return endTime;
     }
 
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     public void setDuration(double duration){ this.duration = duration; }
 
     public double getDuration() {

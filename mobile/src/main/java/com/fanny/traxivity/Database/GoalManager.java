@@ -26,14 +26,14 @@ public class GoalManager {
     public void insertGoal(DbGoal dbGoal){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDatabase.child("users").child(currentUser).child("goal").setValue(dbGoal);
+        mDatabase.child("users").child(currentUser).child("Goal").setValue(dbGoal);
     }
 
     public DbGoal getGoal(final String beginningDate) throws ParseException {
         final Date dStartDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).parse(beginningDate);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("users");
         final String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDatabase.child(currentUser).child("goal").addValueEventListener(new ValueEventListener() {
+        mDatabase.child(currentUser).child("Goal").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child: dataSnapshot.getChildren()) {

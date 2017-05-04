@@ -65,6 +65,8 @@ public class ActivityRecogniserService extends IntentService{
             int duration = Toast.LENGTH_SHORT;
             DisplayToast toast = new DisplayToast(context, strActivity, duration);
             handler.post(toast);
+
+            manager.getDay("04-05-2017");
         }
 
     }

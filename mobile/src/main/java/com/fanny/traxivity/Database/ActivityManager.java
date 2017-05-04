@@ -2,6 +2,7 @@ package com.fanny.traxivity.Database;
 
 import android.util.Log;
 
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.fanny.traxivity.Model.SaveLastActivity.lastActivity;
 
@@ -26,7 +28,9 @@ import static com.fanny.traxivity.Model.SaveLastActivity.lastActivity;
 
 public class ActivityManager {
     private DatabaseReference mDatabase;
+
     private ArrayList<DbActivity> listActivity = new ArrayList<>();
+
     private DateFormat formatterDate = new SimpleDateFormat ("dd-MM-yyyy", Locale.getDefault());
     private DateFormat formatterHour = new SimpleDateFormat ("HH-mm-ss", Locale.getDefault());
     private List<String> resultDates = new ArrayList<>();
@@ -34,20 +38,22 @@ public class ActivityManager {
     public void insertActivity(DbActivity myActivity) {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDatabase.child("users").child(currentUser).child(formatterDate.format(myActivity.getStartTime()))
+        mDatabase.child("users").child(currentUser).child("Activity").child(formatterDate.format(myActivity.getStartTime()))
                 .child(formatterHour.format(myActivity.getStartTime())).setValue(myActivity);
     }
 
      public ArrayList<DbActivity> getDay(final String wantedDate){
-         listActivity.clear();
+        listActivity.clear();
          mDatabase = FirebaseDatabase.getInstance().getReference().child("users");
          final String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-         mDatabase.child(currentUser).addValueEventListener(new ValueEventListener() {
+         mDatabase.child(currentUser).child("Activity").addValueEventListener(new ValueEventListener() {
              @Override
              public void onDataChange(DataSnapshot dataSnapshot) {
                  for (DataSnapshot child: dataSnapshot.getChildren()) {
                      if(child.getKey().equals(wantedDate)){
-                         listActivity.add(child.getValue(DbActivity.class));
+                         for (DataSnapshot postSnapshot: child.getChildren()) {
+                             listActivity.add(postSnapshot.getValue(DbActivity.class));
+                         }
                      }
                  }
              }
@@ -57,6 +63,7 @@ public class ActivityManager {
 
              }
          });
+         Log.d("test2",listActivity.toString());
          return listActivity;
      }
 
@@ -79,7 +86,7 @@ public class ActivityManager {
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("users");
         final String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDatabase.child(currentUser).addValueEventListener(new ValueEventListener() {
+        mDatabase.child(currentUser).child("Activity").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot child: dataSnapshot.getChildren()) {
@@ -103,6 +110,6 @@ public class ActivityManager {
     public void addDurationLast(DbActivity myActivity){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        mDatabase.child("users").child(currentUser).child(formatterDate.format(lastActivity.getStartTime())).child(formatterHour.format(lastActivity.getStartTime())).setValue(myActivity);
+        mDatabase.child("users").child(currentUser).child("Activity").child(formatterDate.format(lastActivity.getStartTime())).child(formatterHour.format(lastActivity.getStartTime())).setValue(myActivity);
     }
 }
