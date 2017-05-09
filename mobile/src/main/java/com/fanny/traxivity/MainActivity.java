@@ -1,26 +1,27 @@
 package com.fanny.traxivity;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.fanny.traxivity.Model.ActivityRecognitionService;
+import com.fanny.traxivity.Model.CustomMarkerView;
+import com.fanny.traxivity.Model.ListenerService;
+import com.fanny.traxivity.View.LoginActivity;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -30,22 +31,25 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.wearable.DataEventBuffer;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 
-
 public class MainActivity extends AppCompatActivity {
+    private DatabaseReference mDataBase;
     /**
      * The app main folder
      */
@@ -71,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
     STANDING = 3
     WALKING = 4
      */
-
 
     /**
      * The running label
@@ -155,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
      * Delete the old files
      * launch the visualization for TODAY
      * @see MainActivity#dataReceiver
-     * @see MainActivity#showDialog()
      * @see MainActivity#createFolder(String)
      * @see MainActivity#deleteOldFiles()
      * @see MainActivity#visualization(Calendar)
@@ -166,24 +168,13 @@ public class MainActivity extends AppCompatActivity {
 
         settings = PreferenceManager.getDefaultSharedPreferences(this);
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(dataReceiver,
-                new IntentFilter("newData"));
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(dataReceiver, new IntentFilter("newData"));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         Button button = (Button)findViewById(R.id.after);
         button.setEnabled(false);
-
-        if(settings.getString("name", null)==null){
-            showDialog();
-        }else{
-            TextView t=(TextView)findViewById(R.id.welcome);
-            String text = "Hello " + settings.getString("name", "") + " !";
-            t.setText(text);
-        }
 
         //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.});
 
@@ -195,19 +186,7 @@ public class MainActivity extends AppCompatActivity {
         visualization(TODAY);
 
         startService(new Intent(this, ActivityRecognitionService.class));
-
     }
-
-
-    /**
-     * The method behind the "settings" button
-     * @see MainActivity#showDialog()
-     * @param view current View
-     */
-    public void changeName(View view){
-        showDialog();
-    }
-
 
 
     /**
@@ -450,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-/*
+/**
     public void dataExtraction(Calendar day){
         int hour;
         int activity;
@@ -827,47 +806,43 @@ public class MainActivity extends AppCompatActivity {
         return df.format(c.getTime());
     }
 
-    /**
-     * Display an alertDialog that asks the name of the user and saves it in the sharedPreferences
-     * Send the new name to the wear through the sendFileService
-     * When the name is changed, change the textView "welcome" withe the new name
-     * @see SendFileService
-     */
-    public void showDialog() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Hello");
-        alert.setMessage("What's your name ?");
-        final EditText input = new EditText(MainActivity.this);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT);
-        input.setLayoutParams(lp);
-        alert.setView(input);
 
-        final SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-
-        alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDataBase = FirebaseDatabase.getInstance().getReference().child("users");
+        mDataBase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child: dataSnapshot.getChildren()) {
+                    if(child.getKey().equals(userId)){
+                        String username = child.child("username").getValue().toString();
+                        setTitle("Hello " + username + " !");
+                    }
+                }
+            }
 
-                editor.putString("name", input.getText().toString());
-                editor.apply();
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                dialog.dismiss();
-
-                startService(new Intent(MainActivity.this, SendFileService.class));
-
-                stopService(new Intent(MainActivity.this, SendFileService.class));
-
-                TextView t = (TextView) findViewById(R.id.welcome);
-                String text = "Hello " + settings.getString("name", "") + " !";
-                t.setText(text);
             }
         });
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
-        AlertDialog dialog = alert.create();
-        dialog.show();
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out:
+                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
     }
 
     /**
@@ -886,5 +861,6 @@ public class MainActivity extends AppCompatActivity {
             visualization(TODAY);
         }
     };
+
 
 }

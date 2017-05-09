@@ -17,4 +17,6 @@
     <string name="settings">settings</string>
     <string name="arrowBack">arrow back</string>
     <string name="arrowForward">arrow forward</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="newstring">Test</string>
 </resources>

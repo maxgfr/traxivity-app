@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Users/Sadiq/Documents/Selfback/App/Traxivity/opencv/src/main/jniLibs"/></dataSet><dataSet config="release"><source path="/Users/Sadiq/Documents/Selfback/App/Traxivity/opencv/src/release/jniLibs"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="C:\Users\1707795\Documents\SelfBack\Traxivity\opencv\src\main\jniLibs"/></dataSet><dataSet config="release"><source path="C:\Users\1707795\Documents\SelfBack\Traxivity\opencv\src\release\jniLibs"/></dataSet></merger>
