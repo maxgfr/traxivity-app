@@ -8,6 +8,11 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
+        android:id="@+id/input_goal"
+        android:orderInCategory="100"
+        android:title="@string/input_goal"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/sign_out"
         android:orderInCategory="100"
         android:title="@string/sign_out"

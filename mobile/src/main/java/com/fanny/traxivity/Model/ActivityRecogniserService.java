@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.fanny.traxivity.Database.*;
+import com.fanny.traxivity.Database.ActivityManager;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
@@ -24,7 +25,7 @@ import static com.fanny.traxivity.Model.SaveLastActivity.lastActivity;
 public class ActivityRecogniserService extends IntentService{
 
     private Handler handler;
-    private com.fanny.traxivity.Database.ActivityManager manager = new com.fanny.traxivity.Database.ActivityManager();
+    private ActivityManager manager = new ActivityManager();
 
     public ActivityRecogniserService(){
         super("ActivityRecogniserService");

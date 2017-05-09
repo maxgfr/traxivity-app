@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.fanny.traxivity.Model.ActivityRecognitionService;
 import com.fanny.traxivity.Model.CustomMarkerView;
 import com.fanny.traxivity.Model.ListenerService;
+import com.fanny.traxivity.View.GoalInputActivity;
 import com.fanny.traxivity.View.LoginActivity;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -838,6 +839,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sign_out:
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                break;
+            case R.id.input_goal:
+                Intent intent = new Intent(getApplicationContext(), GoalInputActivity.class);
+                startActivity(intent);
                 break;
             default:
                 return super.onOptionsItemSelected(item);

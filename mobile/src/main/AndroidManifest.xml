@@ -25,6 +25,8 @@
         <activity android:name=".MainActivity" android:theme="@style/AppTheme" />
         <activity android:name=".View.SignupActivity" android:theme="@style/AppTheme" />
         <activity android:name=".View.ResetActivity" android:theme="@style/AppTheme" />
+        <activity android:name=".View.GoalInputActivity" android:theme="@style/AppTheme" />
+        <activity android:name=".View.InactivityGoalInput" android:theme="@style/AppTheme" />
 
         <service android:name=".Model.ListenerService">
             <intent-filter>
