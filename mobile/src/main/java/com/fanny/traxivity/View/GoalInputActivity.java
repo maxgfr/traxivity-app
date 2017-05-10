@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.fanny.traxivity.R;
+import com.google.android.gms.vision.text.Text;
 
 /**
  * Created by jbjourget on 02/05/2017.
@@ -36,6 +38,9 @@ public class GoalInputActivity extends AppCompatActivity {
     Button dayButton;
     Button weekButton;
     TextView hintsText;
+    TextInputLayout tipSteps;
+    TextInputLayout tipHours;
+    TextInputLayout tipMin;
     public static Boolean isWeek = false;
     public static Integer nbSteps = null;
     public static Integer nbMin = null;
@@ -65,6 +70,9 @@ public class GoalInputActivity extends AppCompatActivity {
         weekButton = (Button) findViewById(R.id.appCompatButton2);
         hintsText = (TextView) findViewById(R.id.textView3);
         hintsText.setText("The average number of steps for a day is "+NB_STEPS_FOR_DAY);
+        tipSteps = (TextInputLayout) findViewById(R.id.textInputSteps);
+        tipHours = (TextInputLayout) findViewById(R.id.textInputHours);
+        tipMin = (TextInputLayout) findViewById(R.id.textInputMin);
 
         rdbSteps.setChecked(true);
         relative1.setVisibility(View.INVISIBLE);
@@ -117,6 +125,9 @@ public class GoalInputActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onStepsTicked(View view){
         stepsEtext.setVisibility(View.VISIBLE);
+        tipHours.setVisibility(View.INVISIBLE);
+        tipMin.setVisibility(View.INVISIBLE);
+        tipSteps.setVisibility(View.VISIBLE);
         rdbTime.setChecked(false);
         relative1.setVisibility(View.INVISIBLE);
         if(isWeek){
@@ -129,6 +140,9 @@ public class GoalInputActivity extends AppCompatActivity {
 
     public void onTimeTicked(View view){
         relative1.setVisibility(View.VISIBLE);
+        tipSteps.setVisibility(View.INVISIBLE);
+        tipHours.setVisibility(View.VISIBLE);
+        tipMin.setVisibility(View.VISIBLE);
         rdbSteps.setChecked(false);
         stepsEtext.setVisibility(View.INVISIBLE);
         if(isWeek){

@@ -18,7 +18,7 @@ import com.fanny.traxivity.R;
  */
 
 public class textDialogAccept extends DialogFragment {
-    private GoalManager manager = new GoalManager();
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
