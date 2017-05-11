@@ -1,15 +1,19 @@
 package com.fanny.traxivity;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.hardware.SensorEvent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +33,9 @@ import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.wearable.DataEventBuffer;
 
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,9 +43,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends WearableActivity {
     /**
@@ -71,6 +83,16 @@ public class MainActivity extends WearableActivity {
     private String[] messages = {"Time to stretch your legs!", "Let's get some fresh air!", "Let's take a walk!", "Some fresh air now would be a good idea!", "How about a stroll?"};
 
 
+    private TextView catchtv;
+    private TextView windowtv;
+    private TextView welcomeTv;
+    private TextView activityTv;
+    private TextView mClockView;
+    private RelativeLayout rLayout;
+    private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
+            new SimpleDateFormat("HH:mm", Locale.US);
+
+
     /**
      * The SharedPreferences used to save the user name
      */
@@ -97,8 +119,46 @@ public class MainActivity extends WearableActivity {
      * @param savedInstanceState
      */
 
+    /*** @see onUpdateAmbient and @onCreate ***/
+
+    private AlarmManager mAmbientStateAlarmManager;
+    private PendingIntent mAmbientStatePendingIntent;
+
+    private static final long AMBIENT_INTERVAL_MS = TimeUnit.SECONDS.toMillis(20);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Tests using PowerManager
+
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock mWakeLock = powerManager.newWakeLock((PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "MyWakelockTag");
+        if (!mWakeLock.isHeld()) {
+            mWakeLock.acquire();
+        }
+        Handler mWakeLockHandler = new Handler();
+
+        mWakeLockHandler.removeCallbacksAndMessages(null);
+
+
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        setAmbientEnabled();
+
+        mAmbientStateAlarmManager =
+                (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent ambientStateIntent =
+                new Intent(getApplicationContext(), MainActivity.class);
+
+        mAmbientStatePendingIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                0,
+                ambientStateIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        
+
+
         settings = PreferenceManager.getDefaultSharedPreferences(this);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(nameReceiver,
@@ -109,30 +169,34 @@ public class MainActivity extends WearableActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(activityReceiver,
                 new IntentFilter("activity"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(infoReceiver,
+                new IntentFilter("info"));
 
 
-        super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_main);
 
-        setAmbientEnabled();
 
 
-        final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            @Override
-            public void onLayoutInflated(WatchViewStub stub) {
-                TextView mTextView = (TextView) stub.findViewById(R.id.welcome);
-                String text;
 
-                if(settings.getString("name", null)==null) {
-                    text = "Welcome !";
 
-                }else{
-                    text = "Welcome " + settings.getString("name", "") + " !";
-                }
-                mTextView.setText(text);
-            }
-        });
+        catchtv = (TextView) findViewById(R.id.catchtv);
+        windowtv = (TextView) findViewById(R.id.window);
+        rLayout = (RelativeLayout) findViewById(R.id.container);
+        welcomeTv = (TextView) findViewById(R.id.welcome);
+        activityTv = (TextView) findViewById(R.id.activity);
+        mClockView = (TextView) findViewById(R.id.clock);
+        String text;
+
+        if(settings.getString("name", null)==null) {
+            text = "Welcome !";
+
+        }else{
+            text = "Welcome " + settings.getString("name", "") + " !";
+        }
+        welcomeTv.setText(text);
+
 
 
         if (!OpenCVLoader.initDebug()) {
@@ -141,6 +205,8 @@ public class MainActivity extends WearableActivity {
         } else {
             Log.d(this.getClass().getSimpleName(), "  OpenCVLoader.initDebug(), working.");
         }
+
+        //Mat im = new Mat(5,5, CvType.CV_32FC1);
 
         //createFolder(TRAXIVITY_FOLDER);
         //createFolder(MODELS_FOLDER);
@@ -153,10 +219,11 @@ public class MainActivity extends WearableActivity {
             //startService(new Intent(MainActivity.this, ActivityRecogniserService.class));
         }else{
             Button button = (Button)findViewById(R.id.share);
+            //startService(new Intent(MainActivity.this, SensorService.class));
             //button.setEnabled(false);
         }
 
-
+        startService(new Intent(MainActivity.this, SensorService.class));
 
 
     }
@@ -170,7 +237,7 @@ public class MainActivity extends WearableActivity {
      */
     @Override
     protected void onDestroy() {
-
+        mAmbientStateAlarmManager.cancel(mAmbientStatePendingIntent);
         super.onDestroy();
 
         startService(new Intent(MainActivity.this, SendFileService.class));
@@ -191,6 +258,8 @@ public class MainActivity extends WearableActivity {
 
     }
 
+    /*** RECEIVER/INTENT RELATIVE ***/
+
     /**
      * Receive intents sent by sendBroadcast() in the ListenerService
      * When an intent is received, it means that a new name has been received from the mobile and added to the shared preferences
@@ -205,12 +274,26 @@ public class MainActivity extends WearableActivity {
         public void onReceive(Context context, Intent intent) {
 
 
-            final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-            TextView welcome = (TextView)stub.findViewById(R.id.welcome);
+            /*final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+            TextView welcome = (TextView)stub.findViewById(R.id.welcome);*/
+            TextView welcome = (TextView)findViewById(R.id.welcome);
             welcome.setText("Welcome " + settings.getString("name", "") + " !");
 
             }
     };
+
+    private BroadcastReceiver infoReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+
+            windowtv.setText(Integer.toString(intent.getIntExtra("windownb", -1)));
+            catchtv.setText(Integer.toString(intent.getIntExtra("catchtv", -1)));
+
+        }
+    };
+
     /**
      * Receive intents sent by sendBroadcastActivity() in the ListenerService
      * When an intent is received, it means that an activity has been predicted
@@ -223,8 +306,9 @@ public class MainActivity extends WearableActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-            TextView activity = (TextView)stub.findViewById(R.id.activity);
+            /*final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
+            TextView activity = (TextView)stub.findViewById(R.id.activity);*/
+            TextView activity = (TextView)findViewById(R.id.activity);
 
             if (intent.getIntExtra("activity", -1) == RUNNING){
                 displayText = "Jogging";
@@ -361,5 +445,53 @@ public class MainActivity extends WearableActivity {
             Log.d("OpenCV", "OpenCV library found inside package. Using it!");
         }
     }
+
+    /*** AMBIENT RELATIVE ***/
+
+    @Override
+    public void onEnterAmbient(Bundle ambientDetails) {
+        super.onEnterAmbient(ambientDetails);
+        updateDisplay();
+    }
+
+    @Override
+    public void onUpdateAmbient() {
+        super.onUpdateAmbient();
+        updateDisplay();
+    }
+
+    @Override
+    public void onExitAmbient() {
+        updateDisplay();
+        super.onExitAmbient();
+    }
+
+    private void updateDisplay() {
+        if (isAmbient()) {
+            rLayout.setBackgroundColor(getResources().getColor(android.R.color.black));
+            mClockView.setVisibility(View.VISIBLE);
+            mClockView.setText(AMBIENT_DATE_FORMAT.format(new Date()));
+        } else {
+            rLayout.setBackgroundColor(Color.argb(255,0,146,166));
+            mClockView.setVisibility(View.GONE);
+        }
+    }
+
+
+
+
+
+
+    @Override
+    public void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+
+        setIntent(intent);
+
+        //refreshDisplayAndSetNextUpdate();
+
+    }
+
+
 
 }

@@ -72,7 +72,7 @@ public class Windower {
         long timeDiff = time - startingTime;
 
         if (timeDiff > WINDOW_SIZE){ // if the size of the window > windowSize, creates a new window
-            System.out.println("Time diff: "+timeDiff);
+            System.out.println("Time diff: " + timeDiff);
             System.out.println("new window");
             completeWindow = new Window(startingTime,time, window);
             //completeWindow.addAll(window);

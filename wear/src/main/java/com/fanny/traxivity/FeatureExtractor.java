@@ -1,5 +1,10 @@
 package com.fanny.traxivity;
 
+import android.app.Activity;
+import android.support.wearable.activity.WearableActivity;
+import android.util.Log;
+import android.widget.TextView;
+
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -11,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by Fanny on 28/06/2016.
  */
-public class FeatureExtractor {
+public class FeatureExtractor{
     /**
      * The app models folder
      */
@@ -61,6 +66,9 @@ public class FeatureExtractor {
 
     private String filesDir;
 
+    public int windownb;
+    public int catchnb;
+
     /**
      * Create the meansigma Mat and call the csvToMat method to fill it
      * @see FeatureExtractor#csvToMat(String, Mat)
@@ -71,6 +79,9 @@ public class FeatureExtractor {
         String file = "meansigma.csv";
         csvToMat(file, meansigma);
         System.out.println("Recieved files dir: "+filesDir);
+
+        windownb=0;
+        catchnb=0;
 
 
     }
@@ -87,42 +98,52 @@ public class FeatureExtractor {
      */
     public Mat extract(ArrayList<String> window){
 
-        if (window.size()%2 != 0) { // Currently dct doesn't supports odd-size Mat
-            window.remove(window.size() - 1);
+        try {
+
+            if (window.size() % 2 != 0) { // Currently dct doesn't supports odd-size Mat
+                window.remove(window.size() - 1);
+            }
+
+
+            input = new Mat(4, window.size(), CvType.CV_32FC1); // CvType.CV_32FC1 = float
+
+
+            output = new Mat(4, window.size(), CvType.CV_32FC1);
+
+            for (i = 0; i < window.size(); i++) {
+                String[] line = window.get(i).split(",");
+                x = Double.parseDouble(line[1]);
+                y = Double.parseDouble(line[2]);
+                z = Double.parseDouble(line[3]);
+                m = Math.sqrt(x * x + y * y + z * z);
+
+                input.put(0, i, x);
+                input.put(1, i, y);
+                input.put(2, i, z);
+                input.put(3, i, m);
+            }
+
+            Core.dct(input, output, Core.DCT_ROWS); //If (flags & DCT_ROWS) != 0 , the function performs a 1D transform of each row.
+
+
+            finalFeature = new Mat(1, 192, CvType.CV_32FC1);
+
+            for (i = 0; i < 48; i++) {
+                finalFeature.put(0, i, Math.abs(output.get(0, i)[0]));
+                finalFeature.put(0, i + 48, Math.abs(output.get(1, i)[0]));
+                finalFeature.put(0, i + 48 * 2, Math.abs(output.get(2, i)[0]));
+                finalFeature.put(0, i + 48 * 3, Math.abs(output.get(3, i)[0]));
+            }
+
+            normalize(finalFeature);
+
+            windownb++;
+
+
+        }catch(Exception e){
+            Log.e("ERROR", e.getMessage());
+            catchnb++;
         }
-
-
-        input = new Mat(4, window.size(), CvType.CV_32FC1); // CvType.CV_32FC1 = float
-
-        output = new Mat(4, window.size(), CvType.CV_32FC1);
-
-        for(i = 0; i<window.size(); i++) {
-            String[] line = window.get(i).split(",");
-            x = Double.parseDouble(line[1]);
-            y = Double.parseDouble(line[2]);
-            z = Double.parseDouble(line[3]);
-            m = Math.sqrt(x * x + y * y + z * z);
-
-            input.put(0,i,x);
-            input.put(1,i,y);
-            input.put(2,i,z);
-            input.put(3,i,m);
-        }
-
-        Core.dct(input, output, Core.DCT_ROWS); //If (flags & DCT_ROWS) != 0 , the function performs a 1D transform of each row.
-
-
-
-        finalFeature = new Mat(1, 192, CvType.CV_32FC1);
-
-        for (i = 0 ; i < 48 ; i++) {
-            finalFeature.put(0, i, Math.abs(output.get(0, i)[0]));
-            finalFeature.put(0, i + 48, Math.abs(output.get(1, i)[0]));
-            finalFeature.put(0, i + 48 * 2, Math.abs(output.get(2, i)[0]));
-            finalFeature.put(0, i + 48 * 3, Math.abs(output.get(3, i)[0]));
-        }
-
-        normalize(finalFeature);
 
         return finalFeature;
     }

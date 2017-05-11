@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -62,6 +63,7 @@ public class SensorService extends Service implements SensorEventListener {
      * The walking label
      */
     private static final int WALKING = 4;
+    private int cpt = 0;
 
 
     private Windower windowing = new Windower();
@@ -297,6 +299,9 @@ public class SensorService extends Service implements SensorEventListener {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
+
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         // An Android handler thread internally operates on a looper.
@@ -433,6 +438,7 @@ public class SensorService extends Service implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+
         int inactiveThreshold = 660;
         String data = "";
         //event.
@@ -446,6 +452,7 @@ public class SensorService extends Service implements SensorEventListener {
             Window window = windowing.getLastFullWindow();
             System.out.println("Window length: "+window.size());
             Mat rep = featureExtraction.extract(window.getData());
+            sendBroadcastInfo(featureExtraction.windownb, featureExtraction.catchnb);
 
             int prediction = classification.predict(rep);
             int activityClass = prediction;
@@ -472,7 +479,10 @@ public class SensorService extends Service implements SensorEventListener {
             DisplayToast toast = new DisplayToast(context, activity, duration);
 
             //if(prediction != SEDENTARY){
-                handler.post(toast);
+
+            /*** DISPLAYING TOAST ***/
+
+                //handler.post(toast);
 
             //}
 
@@ -498,6 +508,11 @@ public class SensorService extends Service implements SensorEventListener {
 
 
             sendBroadcastActivity(activityClass);
+            /*if(cpt<4){
+                cpt++;
+            }else{
+                cpt=0;
+            }*/
 
 
             String output = Long.toString(window.getStart_time()) + ",";
@@ -634,7 +649,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     public void registerCSensor(Sensor sensor) {
 
-        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST, mServiceHandler);
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST);
         //sensorManager.registerListener(this, sensor, 10000, mServiceHandler);
 
     }
@@ -720,6 +735,22 @@ public class SensorService extends Service implements SensorEventListener {
 
     }
 
+    public void sendBroadcastInfo(int windownb, int catchnb){
+        Intent intent = new Intent("info");
+        intent.putExtra("windownb", windownb);
+        intent.putExtra("catchnb", catchnb);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+
+    /*protected void onPause(){
+        sensorManager.unregisterListener(this, sensor);
+    }
+
+
+    protected  void onResume(){
+        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST, mServiceHandler);
+    }*/
 
 
 }
