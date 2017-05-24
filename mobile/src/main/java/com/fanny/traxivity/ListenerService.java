@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,11 +23,14 @@ import com.google.android.gms.wearable.WearableListenerService;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
+
+import io.realm.Realm;
 
 /**
  * Listen to the changes in the Data Layer Event, used to send the collected data from the wear to the mobile
@@ -91,6 +95,12 @@ public class ListenerService extends WearableListenerService implements GoogleAp
                 if (path.equals(WEARABLE_DATA_PATH)) {
 
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
+
+                    byte[] realmAsset = dataMapItem.getDataMap().getByteArray("realmDatabase");
+                    if(realmAsset != null) {
+                        toFile(realmAsset);
+                    }
+
                     DataMap dataMap = dataMapItem.getDataMap();
 
                     String fileName = dataMap.getString("fileName");
@@ -168,6 +178,22 @@ public class ListenerService extends WearableListenerService implements GoogleAp
         }
 
 
+    }
+
+    private void toFile(byte [] byteArray){
+        File writableFolder = ListenerService.this.getFilesDir();
+        File realmFile = new File(writableFolder, Realm.DEFAULT_REALM_NAME);
+        if (realmFile.exists()) {
+            realmFile.delete();
+        }
+        try {
+            FileOutputStream fos=new FileOutputStream(realmFile.getPath());
+            fos.write(byteArray);
+            fos.close();
+        }
+        catch (java.io.IOException e) {
+            Log.d("ListenerService", "toFile exception: " + e.getLocalizedMessage());
+        }
     }
 
 

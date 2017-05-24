@@ -14,6 +14,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -26,9 +27,13 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class SensorService extends Service implements SensorEventListener {
+
+    private final static int INTERVAL = 1000 * 60 * 1; //1 minute
 
     private int sedCount = 0;
 
@@ -63,6 +68,8 @@ public class SensorService extends Service implements SensorEventListener {
      * The walking label
      */
     private static final int WALKING = 4;
+
+    private static final int LONG_INACTIVE = 11;
     private int cpt = 0;
 
 
@@ -266,6 +273,8 @@ public class SensorService extends Service implements SensorEventListener {
 
     private Handler handler;
 
+    private long sendDate;
+
 
 
     public SensorService() {
@@ -321,6 +330,8 @@ public class SensorService extends Service implements SensorEventListener {
         //classification.trainNewModel();
 
         SensorsAL = new ArrayList<>();
+
+        sendDate = Calendar.getInstance().getTimeInMillis();
 
         initRecordFile();
 
@@ -507,7 +518,10 @@ public class SensorService extends Service implements SensorEventListener {
             }
 
 
+
+            //sendBroadcastActivity(RUNNING);
             sendBroadcastActivity(activityClass);
+
             /*if(cpt<4){
                 cpt++;
             }else{
@@ -529,7 +543,49 @@ public class SensorService extends Service implements SensorEventListener {
                     filewriter = new FileWriter(recordFile, true);
                     filewriter.write(output);
 
-                    sendBroadcastButton(true);
+                    //sendBroadcastButton(true);
+
+
+
+                    if((Calendar.getInstance().getTimeInMillis()-sendDate)>60000) {
+
+
+                        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                        long[] vibrationPattern = {0, 500, 50, 300};
+                        //-1 - don't repeat
+                        final int indexInPatternToRepeat = -1;
+                        vibrator.vibrate(vibrationPattern, indexInPatternToRepeat);
+
+                        startService(new Intent(SensorService.this, SendFileService.class));
+                        stopService(new Intent(SensorService.this, SendFileService.class));
+
+                        sendDate=Calendar.getInstance().getTimeInMillis();
+
+                    }
+
+
+
+
+                    /*final Handler handler = new Handler();
+                    Runnable runnable = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            try{
+                                startService(new Intent(SensorService.this, SendFileService.class));
+                                stopService(new Intent(SensorService.this, SendFileService.class));
+                            }
+                            catch (Exception e) {
+                                // TODO: handle exception
+                            }
+                            finally{
+                                //also call the same runnable to call it at regular interval
+                                handler.postDelayed(this, 1000);
+                            }
+                        }
+                    };
+
+                    runnable.run();*/
 
                 } catch (IOException e) {
                     e.printStackTrace();

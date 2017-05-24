@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
@@ -23,6 +25,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Send the collected data from the wear to the mobile
@@ -79,7 +82,36 @@ public class SendFileService extends Service implements GoogleApiClient.Connecti
 
         //String path = getFilesDir().toString()+DATA_FOLDER;
         //Log.d("Files", "Path: " + path);
-        sendFileContent();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Node> connectedNodes = Wearable.NodeApi.getConnectedNodes(googleClient).await().getNodes();
+
+                Log.d("Listing nodes","Listing nodes...");
+
+                for (Node node:connectedNodes) {
+
+                    if(node.isNearby()){
+
+                        Log.d("nodeList", "Sending data to " + node.getDisplayName() + "...");
+                        /*Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                        long[] vibrationPattern = {0, 500, 50, 300};
+                        //-1 - don't repeat
+                        final int indexInPatternToRepeat = -1;
+                        vibrator.vibrate(vibrationPattern, indexInPatternToRepeat);*/
+
+                        sendFileContent();
+                    }else{
+                        Log.d("nodeList", node.getDisplayName() + "isn't nearby, can't send data...");
+                    }
+
+                }
+
+
+            }
+        }).start();
+
 
     }
 

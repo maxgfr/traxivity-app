@@ -67,6 +67,8 @@ public class MainActivity extends WearableActivity {
      */
     private static final int RUNNING = 0;
 
+    private static final int SEDENTARY = 1;
+
     /**
      * The stairs label
      */
@@ -317,7 +319,7 @@ public class MainActivity extends WearableActivity {
             }else if(intent.getIntExtra("activity", -1) == WALKING) {
                 displayText = "Walking";
             } else if(intent.getIntExtra("activity", -1) >= 10){
-                if (intent.getIntExtra("activity", -1)== LONG_INACTIVE) {
+                if (intent.getIntExtra("activity", -1)== SEDENTARY) {
                     Random gen = new Random();
                     int i = gen.nextInt(messages.length);
                     displayText = messages[i];
@@ -476,9 +478,6 @@ public class MainActivity extends WearableActivity {
             mClockView.setVisibility(View.GONE);
         }
     }
-
-
-
 
 
 
