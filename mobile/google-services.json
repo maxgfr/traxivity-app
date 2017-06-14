@@ -1,0 +1,113 @@
+{
+  "project_info": {
+    "project_number": "958555222488",
+    "firebase_url": "https://rguselfback-5a387.firebaseio.com",
+    "project_id": "rguselfback-5a387",
+    "storage_bucket": "rguselfback-5a387.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:958555222488:android:73de1b33f096fde9",
+        "android_client_info": {
+          "package_name": "com.traxivity.selfback.traxivity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "958555222488-vaivjo8u66otks09a883qi5cekdjki7k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.traxivity.selfback.traxivity",
+            "certificate_hash": "3ee5adf4bb7ff90be5b3ac93a057f73deda99e3b"
+          }
+        },
+        {
+          "client_id": "958555222488-rro94k5o2s3t2u03gporpg73betdop7l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.traxivity.selfback.traxivity",
+            "certificate_hash": "a254d344596e0af75cbb193c5cac0f7a2d146600"
+          }
+        },
+        {
+          "client_id": "958555222488-e3q4c1js0lqp3v8kpplul1ra6d42u21k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoSkcIHm2Hhur0BvxGGK7m5Yh89xMsRjo"
+        },
+        {
+          "current_key": "AIzaSyC_YiAF_J7gNjzEmMh_E7tCOSQhR7hrGlM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "958555222488-e3q4c1js0lqp3v8kpplul1ra6d42u21k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:958555222488:android:cfc79e87bff34f68",
+        "android_client_info": {
+          "package_name": "com.fanny.traxivity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "958555222488-onou97mdg784qq0kabmparcfcf18akvf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fanny.traxivity",
+            "certificate_hash": "3ee5adf4bb7ff90be5b3ac93a057f73deda99e3b"
+          }
+        },
+        {
+          "client_id": "958555222488-e3q4c1js0lqp3v8kpplul1ra6d42u21k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoSkcIHm2Hhur0BvxGGK7m5Yh89xMsRjo"
+        },
+        {
+          "current_key": "AIzaSyC_YiAF_J7gNjzEmMh_E7tCOSQhR7hrGlM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "958555222488-e3q4c1js0lqp3v8kpplul1ra6d42u21k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

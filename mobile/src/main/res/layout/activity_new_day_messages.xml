@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.fanny.traxivity.admin.view.activities.MessagesManager">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+
+        <TextView
+            android:id="@+id/tv_fetchMessages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="sans-serif"
+            android:text="New message settings :"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Day time :"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rg_newM_dayTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_newDayM_Beginning"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Begining"
+                android:textSize="11dp" />
+
+            <RadioButton
+                android:id="@+id/rb_newDayM_Midday"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Midday"
+                android:textSize="11dp" />
+
+            <RadioButton
+                android:id="@+id/rb_newDayM_End"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="End of day"
+                android:textSize="11dp" />
+
+            <RadioButton
+                android:id="@+id/rb_newDayM_Anytime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Anytime"
+                android:textSize="11dp" />
+
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/ma_tv_achievement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Achievement level :"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rg_newDayM_achievementLevel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8sp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_newDayM_Low"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="Low"
+                android:textSize="12dp" />
+
+            <RadioButton
+                android:id="@+id/rb_newDayM_Moderate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Moderate"
+                android:textSize="12dp" />
+
+            <RadioButton
+                android:id="@+id/rb_newDayM_High"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="High"
+                android:textSize="12dp" />
+
+            <RadioButton
+                android:id="@+id/rb_newDayM_Full"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Full"
+                android:textSize="12dp" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="9"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="9"
+                    android:gravity="center_vertical"
+                    android:text="Quote :"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/ib_quoteDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/ic_quote"
+                android:scaleX="0.75"
+                android:scaleY="0.75"
+                app:srcCompat="@mipmap/ic_quote" />
+
+            <ImageButton
+                android:id="@+id/ib_deleteQuoteDay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/ic_delete"
+                android:scaleX="0.75"
+                android:scaleY="0.75" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_quoteDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/et_messageContentDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Message's content"
+            android:inputType="textPersonName"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/bt_addDayMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add new message" />
+
+    </LinearLayout>
+</RelativeLayout>

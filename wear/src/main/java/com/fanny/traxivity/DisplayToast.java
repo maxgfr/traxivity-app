@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 public class DisplayToast implements Runnable {
 
+    private final String TAG="DisplayToast";
+
     String text;
     Context context;
     int duration;

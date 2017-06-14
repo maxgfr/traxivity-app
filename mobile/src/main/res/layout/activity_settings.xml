@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/bt_timePickerStart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/ic_time"
+            android:text="Day start at:" />
+
+        <TextView
+            android:id="@+id/tv_start"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/bt_timePickerStart"
+            android:text="No timing set"/>
+
+        <Button
+            android:id="@+id/bt_timePickerMid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_start"
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/ic_time"
+            android:text="Mid day at:" />
+
+        <TextView
+            android:id="@+id/tv_mid"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/bt_timePickerMid"
+            android:text="No timing set"/>
+
+        <Button
+            android:id="@+id/bt_timePickerEnd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_mid"
+            android:layout_weight="1"
+            android:drawableLeft="@mipmap/ic_time"
+            android:text="End day at:" />
+
+        <TextView
+            android:id="@+id/tv_end"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/bt_timePickerEnd"
+            android:text="No timing set"/>
+    </RelativeLayout>
+
+</ScrollView>

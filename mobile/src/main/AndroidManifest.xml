@@ -1,38 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.fanny.traxivity">
 
-    <!--
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <application android:allowBackup="true" android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".view.LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.SignupActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.ResetActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".view.GoalInputActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".view.InactivityGoalInput"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".view.SettingsActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".admin.view.activities.MainMenu"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".admin.view.activities.NewMessage"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".admin.view.activities.MessagesManager"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".view.AddNewActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".admin.view.activities.NewConversion"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".admin.view.activities.ConversionManager"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".admin.view.activities.ActivityConversion"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".admin.view.activities.InformationManager"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".admin.view.activities.ConfirmationManager"
+            android:theme="@style/AppTheme" />
 
-        <service android:name=".ListenerService">
+        <activity
+            android:name=".admin.view.activities.MessagesManagerNoCate"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".admin.view.activities.DayWeekChoice"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".admin.view.activities.NewDayMessage"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".admin.view.activities.NewWeekMessage"
+            android:theme="@style/AppTheme" />
+
+        <service android:name=".model.ListenerService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
 
-                <data android:host="*" android:pathPrefix="/wearable_data" android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/wearable_data"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
-        <service android:name=".SendFileService" android:enabled="true" android:exported="true" />
-        <service android:name=".ActivityRecognitionService" android:enabled="true"
+        <service
+            android:name=".model.SendFileService"
+            android:enabled="true"
             android:exported="true" />
-        <service android:name=".ActivityRecogniserService" android:enabled="true"
-            android:exported="true" />
+        <receiver android:name="com.fanny.traxivity.model.Alarm"/>
     </application>
 
 </manifest>

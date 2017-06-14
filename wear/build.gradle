@@ -23,14 +23,12 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
-    sourceSets { main { resources.srcDirs = ['src/main/resources', 'src/main/resources/'] } }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.support:wearable:2.0.0-beta2'
     provided 'com.google.android.wearable:wearable:2.0.0-beta2'
-    compile 'com.google.android.gms:play-services:8.1.0'
-    compile project(':opencv')
-    compile project(':dsp-collection')
+    compile 'com.google.android.gms:play-services:8.3.0'
+
 }
