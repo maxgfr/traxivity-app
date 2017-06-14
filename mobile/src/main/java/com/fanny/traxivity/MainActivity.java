@@ -2,6 +2,8 @@ package com.fanny.traxivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import com.fanny.traxivity.database.dayTiming.DayTimingManager;
 import com.fanny.traxivity.database.dayTiming.DbTiming;
 import com.fanny.traxivity.model.Alarm;
+import com.fanny.traxivity.model.HistoryService;
 import com.fanny.traxivity.model.SetAlarm;
 import com.fanny.traxivity.view.AddNewActivity;
 import com.fanny.traxivity.admin.view.activities.MainMenu;
@@ -26,6 +29,8 @@ import com.fanny.traxivity.model.ViewPagerAdapter;
 import com.fanny.traxivity.view.GoalInputActivity;
 import com.fanny.traxivity.view.LoginActivity;
 import com.fanny.traxivity.view.SettingsActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,12 +49,16 @@ import io.realm.Realm;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
 
     private DatabaseReference mDataBase;
     private CharSequence Titles[]={"Day","Week","Month"};
     private String usernameString, emailString;
     private TextView username, email;
+
+    private HistoryService hist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +145,10 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        hist = HistoryService.getInstance();
+
+        hist.buildFitnessClientHistory(this);
     }
 
     public void createFolder(String nameFolder) {
@@ -184,5 +197,20 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
