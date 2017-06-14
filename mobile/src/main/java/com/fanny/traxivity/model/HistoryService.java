@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.fanny.traxivity.MainActivity;
 import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
 import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
+import com.fanny.traxivity.view.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -50,7 +52,7 @@ public class HistoryService implements GoogleApiClient.ConnectionCallbacks,
     }
 
     //Build a client
-    public void buildFitnessClientHistory(MainActivity main) {
+    public void buildFitnessClientHistory(LoginActivity main) {
         // Create the Google API Client
         mClient = new GoogleApiClient.Builder(main)
                 .addApi(Fitness.HISTORY_API)

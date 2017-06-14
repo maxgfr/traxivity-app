@@ -49,16 +49,14 @@ import io.realm.Realm;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private DatabaseReference mDataBase;
     private CharSequence Titles[]={"Day","Week","Month"};
     private String usernameString, emailString;
     private TextView username, email;
 
-    private HistoryService hist;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,9 +144,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        hist = HistoryService.getInstance();
 
-        hist.buildFitnessClientHistory(this);
     }
 
     public void createFolder(String nameFolder) {
@@ -197,20 +193,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 }
