@@ -1,5 +1,6 @@
 package com.fanny.traxivity.view;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import com.fanny.traxivity.MainActivity;
 import com.fanny.traxivity.R;
 import com.fanny.traxivity.admin.controller.InformationDAO;
 import com.fanny.traxivity.admin.model.Information;
@@ -94,9 +96,7 @@ public class InactivityGoalInput extends AppCompatActivity {
             public void onClick(View v) {
                 nbHours = nbPickerHours.getValue();
                 nbMin = nbPickerMin.getValue();
-                android.app.FragmentManager fm = getFragmentManager();
-                DialogFragment newFragment = new textDialogInactivity();
-                newFragment.show(fm, "ActivityAccept");
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 

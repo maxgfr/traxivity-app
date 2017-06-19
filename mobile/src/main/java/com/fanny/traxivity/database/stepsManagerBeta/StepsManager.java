@@ -114,8 +114,10 @@ public class StepsManager {
     }
 
     public List<DbSteps> getAllActivityDay(Date wantedDate) {
+        RealmResults<DbSteps> results = null;
         realm = Realm.getDefaultInstance();
-        RealmResults<DbSteps> results = realm.where(DbSteps.class).equalTo("id",wantedDate.getDate()).findAllSorted("startTime", Sort.DESCENDING);
+        results = realm.where(DbSteps.class).equalTo("id",wantedDate.getDate()).distinct("hoursRange");
+                //.findAllSorted("startTime", Sort.DESCENDING);
         return realm.copyFromRealm(results);
     }
 
@@ -147,16 +149,20 @@ public class StepsManager {
                     totalNbSteps = totalNbSteps + myActivity.getNbSteps();
                     lastActivityHoursRange = myActivity.getHoursRange();
                     listSize = listSize - 1;
-                    if(listSize == 0){
+                    if(listSize == 0 && totalNbSteps >= 0){
                         stepsDayByHours.put(lastActivityHoursRange, totalNbSteps);
                     }
                 } else {
-                    stepsDayByHours.put(lastActivityHoursRange, totalNbSteps);
+                    if(totalNbSteps >= 0) {
+                        stepsDayByHours.put(lastActivityHoursRange, totalNbSteps);
+                    }
                     lastActivityHoursRange = myActivity.getHoursRange();
                     totalNbSteps = myActivity.getNbSteps();
                     listSize = listSize - 1;
                     if(listSize == 0){
-                        stepsDayByHours.put(lastActivityHoursRange, totalNbSteps);
+                        if(totalNbSteps >= 0) {
+                            stepsDayByHours.put(lastActivityHoursRange, totalNbSteps);
+                        }
                     }
                 }
             }

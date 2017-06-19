@@ -62,6 +62,7 @@ public class DailyTab extends Fragment {
     private BroadcastReceiver broadCastNewMessage;
     private List<BarEntry> entries;
     private BarChart graphChart;
+    private Map<Integer, Integer> mapStepsDayByHour;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,43 +101,50 @@ public class DailyTab extends Fragment {
         final DbGoal dailyGoalSteps = managerGoal.goalStepsDaily(currentDate);
         final DbGoal dailyGoalDuration = managerGoal.goalDurationDaily(currentDate);
 
-        broadCastNewMessage = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateCircleStepsText();
-
-                if(!entries.isEmpty()) {
-                    entries.clear();
-                }
-                if(set != null) {
-                    set.clear();
-                }
-                yAxisR.setAxisMaximum(dailyGoalSteps.getStepsNumber() * 2f);
-                Integer nbsteps;
-                Map<Integer, Integer> mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
-                for (Integer i = 0; i < 24; i++) {
-                    nbsteps = mapStepsDayByHour.get(i);
-
-                    if (nbsteps == null) {
-                        entries.add(new BarEntry((float) i, 0f));
-                        Log.w("Nbsteps", i.toString());
-
-                    } else {
-                        entries.add(new BarEntry((float) i, (float) nbsteps));
-                        Log.w("Nbsteps", nbsteps.toString());
-                    }
-                }
-                set = new BarDataSet(entries, "Steps");
-                graphChart.invalidate();
-            }
-        };
-
-        getActivity().registerReceiver(broadCastNewMessage, new IntentFilter("bcNewSteps"));
 
         if (dailyGoalSteps != null) {
-            dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, managerSteps.getTotalStepsDay(currentDate)), 2000);
+            broadCastNewMessage = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    updateCircleStepsText();
+
+                    if(!entries.isEmpty()) {
+                        entries.clear();
+                    }
+                    if(set != null) {
+                        set.clear();
+                    }
+                    yAxisR.setAxisMaximum(dailyGoalSteps.getStepsNumber() * 2f);
+                    Integer nbsteps;
+                    Map<Integer, Integer> mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
+                    for (Integer i = 0; i < 24; i++) {
+                        nbsteps = mapStepsDayByHour.get(i);
+
+                        if (nbsteps == null) {
+                            entries.add(new BarEntry((float) i, 0f));
+                            Log.w("Nbsteps", i.toString());
+
+                        } else {
+                            entries.add(new BarEntry((float) i, (float) nbsteps));
+                            Log.w("Nbsteps", nbsteps.toString());
+                        }
+                    }
+                    set = new BarDataSet(entries, "Steps");
+                    graphChart.invalidate();
+                }
+            };
+
+            getActivity().registerReceiver(broadCastNewMessage, new IntentFilter("bcNewSteps"));
+
+            int total = 0;
+            mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
+            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+                total = total + entry.getValue();
+            }
+
+            dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, total), 2000);
             dailyCircle.setTextMode(TextMode.TEXT);
-            dailyCircle.setText(managerSteps.getTotalStepsDay(currentDate) + " steps");
+            dailyCircle.setText(total + " steps");
 
             dailyCircle.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -153,7 +161,7 @@ public class DailyTab extends Fragment {
             yAxisR.setAxisMaximum(dailyGoalSteps.getStepsNumber() * 2f);
 
             Integer nbsteps;
-            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
+            mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
             for (Integer i = 0; i < 24; i++) {
                 nbsteps = mapStepsDayByHour.get(i);
 
@@ -231,13 +239,6 @@ public class DailyTab extends Fragment {
         });
         **/
 
-        StepsManager manager = new StepsManager();
-
-        List<DbSteps> list = manager.getAllActivityDay(currentDate);
-        for (DbSteps steps : list) {
-            Log.d("test", steps.getStartTime() + " - " + steps.getNbSteps());
-        }
-
         BarData data = new BarData(set);
         data.setBarWidth(0.9f); // set custom bar width
         graphChart.setData(data);
@@ -265,16 +266,28 @@ public class DailyTab extends Fragment {
     }
 
     public void updateCircleStepsText() {
-        dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, managerSteps.getTotalStepsDay(currentDate)), 2000);
+        int total = 0;
+        mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
+        for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+            total = total + entry.getValue();
+        }
+
+        dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, total), 2000);
         dailyCircle.setUnit("");
         dailyCircle.setAutoTextSize(true);
         dailyCircle.setUnitVisible(false);
         dailyCircle.setTextMode(TextMode.TEXT);
-        dailyCircle.setText(managerSteps.getTotalStepsDay(currentDate) + " steps");
+        dailyCircle.setText(total + " steps");
     }
 
     public void updateCircleStepsPercent() {
-        dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, managerSteps.getTotalStepsDay(currentDate)), 2000);
+        int total = 0;
+        mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
+        for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+            total = total + entry.getValue();
+        }
+
+        dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, total), 2000);
         dailyCircle.setTextMode(TextMode.PERCENT);
         dailyCircle.setUnitSize(200);
         dailyCircle.setAutoTextSize(true);
@@ -283,7 +296,7 @@ public class DailyTab extends Fragment {
         dailyCircle.setUnitVisible(true);
         dailyCircle.setUnitScale(1);
         dailyCircle.setUnitPosition(UnitPosition.RIGHT_TOP);
-        dailyCircle.setText(String.valueOf(managerGoal.goalStatusStepsDaily(currentDate, managerSteps.getTotalStepsDay(currentDate))));
+        dailyCircle.setText(String.valueOf(managerGoal.goalStatusStepsDaily(currentDate, total)));
     }
 
 }

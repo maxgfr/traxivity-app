@@ -101,4 +101,8 @@ public class ResetActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void onBackPressed(){
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    }
 }

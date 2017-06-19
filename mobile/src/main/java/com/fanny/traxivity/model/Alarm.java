@@ -21,7 +21,7 @@ import java.util.Date;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static java.lang.System.currentTimeMillis;
 /**
- * Created by jbjourget on 06/06/2017.
+ * Created by jbjourget.
  */
 public class Alarm extends BroadcastReceiver {
     @Override

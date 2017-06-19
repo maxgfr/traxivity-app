@@ -81,7 +81,7 @@ public class ListenerService extends WearableListenerService implements GoogleAp
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 // DataItem changed
-                /*DataItem item = event.getDataItem();
+                DataItem item = event.getDataItem();
                 if (item.getUri().getPath().compareTo(WEARABLE_DATA_PATH) == 0) {
                     DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
                     Long timestamp = dataMap.getLong("timestamp");
@@ -99,9 +99,8 @@ public class ListenerService extends WearableListenerService implements GoogleAp
                     managerSteps.insertNew(newActivity);
                     this.sendBroadcast(new Intent().setAction("bcNewSteps"));
                 }
-            } else if (event.getType() == DataEvent.TYPE_DELETED) {*/
+            } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem deleted
-                new ViewStepDataForDay().execute();
             }
         }
     }

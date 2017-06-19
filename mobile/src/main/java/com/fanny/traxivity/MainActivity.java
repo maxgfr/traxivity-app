@@ -2,8 +2,6 @@ package com.fanny.traxivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -20,7 +18,6 @@ import android.widget.TextView;
 import com.fanny.traxivity.database.dayTiming.DayTimingManager;
 import com.fanny.traxivity.database.dayTiming.DbTiming;
 import com.fanny.traxivity.model.Alarm;
-import com.fanny.traxivity.model.HistoryService;
 import com.fanny.traxivity.model.SetAlarm;
 import com.fanny.traxivity.view.AddNewActivity;
 import com.fanny.traxivity.admin.view.activities.MainMenu;
@@ -29,8 +26,6 @@ import com.fanny.traxivity.model.ViewPagerAdapter;
 import com.fanny.traxivity.view.GoalInputActivity;
 import com.fanny.traxivity.view.LoginActivity;
 import com.fanny.traxivity.view.SettingsActivity;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,8 +50,6 @@ public class MainActivity extends AppCompatActivity
     private CharSequence Titles[]={"Day","Week","Month"};
     private String usernameString, emailString;
     private TextView username, email;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,8 +136,6 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-
-
     }
 
     public void createFolder(String nameFolder) {

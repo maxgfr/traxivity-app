@@ -149,4 +149,8 @@ public class SignupActivity extends AppCompatActivity {
 
         return valid;
     }
+
+    public void onBackPressed(){
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+    }
 }

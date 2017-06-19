@@ -57,8 +57,8 @@ public class HistoryService implements GoogleApiClient.ConnectionCallbacks,
         mClient = new GoogleApiClient.Builder(main)
                 .addApi(Fitness.HISTORY_API)
                 .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
-                .addConnectionCallbacks(main)
-                .enableAutoManage(main, 0, main)
+                .addConnectionCallbacks(this)
+                .enableAutoManage(main, 0, this)
                 .build();
     }
 

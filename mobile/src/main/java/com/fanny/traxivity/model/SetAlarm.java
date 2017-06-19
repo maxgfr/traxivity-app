@@ -8,7 +8,7 @@ import com.fanny.traxivity.database.dayTiming.DbTiming;
 import java.util.Calendar;
 
 /**
- * Created by huextrat <www.hugoextrat.com>
+ * Created by jbjourget.
  */
 
 public class SetAlarm {
