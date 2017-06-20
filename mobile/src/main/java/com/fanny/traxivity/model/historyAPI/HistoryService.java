@@ -1,14 +1,14 @@
-package com.fanny.traxivity.model;
+package com.fanny.traxivity.model.historyAPI;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.fanny.traxivity.MainActivity;
 import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
 import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
+import com.fanny.traxivity.model.ListenerService;
 import com.fanny.traxivity.view.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
@@ -51,35 +51,49 @@ public class HistoryService implements GoogleApiClient.ConnectionCallbacks,
         return INSTANCE;
     }
 
+    public boolean isClientNull () {
+        if (mClient == null) {
+            return true;
+        }
+        return false;
+    }
+
     //Build a client
-    public void buildFitnessClientHistory(LoginActivity main) {
+    public void buildFitnessClientHistory(MainActivity main) {
         // Create the Google API Client
         mClient = new GoogleApiClient.Builder(main)
                 .addApi(Fitness.HISTORY_API)
                 .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
-                .addConnectionCallbacks(this)
-                .enableAutoManage(main, 0, this)
+                .addConnectionCallbacks(main)
+                .addOnConnectionFailedListener(main)
                 .build();
+
+        mClient.connect();
     }
 
     //View today's steps
     public void displayStepDataForToday() {
+        if (mClient == null) {
+            System.out.println("Client NULL");
+        }
         DailyTotalResult result = Fitness.HistoryApi.readDailyTotal( mClient, DataType.TYPE_STEP_COUNT_DELTA ).await(1, TimeUnit.SECONDS);
         showDataSet(result.getTotal());
     }
 
     private void showDataSet(DataSet dataSet) {
+        System.out.println("SHOW DATA SET");
         Log.e("History", "Data returned for Data type: " + dataSet.getDataType().getName());
         DateFormat dateFormat = DateFormat.getDateInstance();
         DateFormat timeFormat = DateFormat.getTimeInstance();
-
         for (DataPoint dp : dataSet.getDataPoints()) {
+            System.out.println("DataPoint");
             Log.e("History", "Data point:");
             Log.e("History", "\tType: " + dp.getDataType().getName());
             Log.e("History", "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
             Log.e("History", "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
             for(Field field : dp.getDataType().getFields()) {
                 //Log.e("History", "\tField: " + field.getName() + " Value: " + dp.getValue(field));
+                System.out.println("UPDATE STEP");
                 int stepcount = dp.getValue(field).asInt();
                 StepsManager managerSteps = new StepsManager();
                 Calendar cal = Calendar.getInstance();

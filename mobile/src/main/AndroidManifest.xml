@@ -101,6 +101,8 @@
             android:enabled="true"
             android:exported="true" />
         <receiver android:name="com.fanny.traxivity.model.Alarm"/>
+
+        <receiver android:name="com.fanny.traxivity.model.historyAPI.UpdateHistory"/>
     </application>
 
 </manifest>

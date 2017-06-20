@@ -11,6 +11,8 @@ import android.util.Log;
 import com.fanny.traxivity.MainActivity;
 import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
 import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
+import com.fanny.traxivity.model.historyAPI.HistoryService;
+import com.fanny.traxivity.model.historyAPI.ViewStepDataForDay;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.wearable.DataEvent;
@@ -77,6 +79,8 @@ public class ListenerService extends WearableListenerService implements GoogleAp
      */
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
+        //history service
+        new ViewStepDataForDay().execute();
 
         for (DataEvent event : dataEvents) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
@@ -91,12 +95,12 @@ public class ListenerService extends WearableListenerService implements GoogleAp
                     Log.d(TAG,"Timestamp : "+ timestamp.toString());
                     Log.d(TAG,"Stepcount : "+Integer.toString(stepcount));
 
-                    StepsManager managerSteps = new StepsManager();
+                    /*StepsManager managerSteps = new StepsManager();
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(timestamp);
                     Date d = cal.getTime();
                     DbSteps newActivity = new DbSteps(d, stepcount);
-                    managerSteps.insertNew(newActivity);
+                    managerSteps.insertNew(newActivity);*/
                     this.sendBroadcast(new Intent().setAction("bcNewSteps"));
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {

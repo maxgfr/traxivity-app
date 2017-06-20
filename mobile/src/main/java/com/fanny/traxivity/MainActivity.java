@@ -1,7 +1,13 @@
 package com.fanny.traxivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -19,6 +25,8 @@ import com.fanny.traxivity.database.dayTiming.DayTimingManager;
 import com.fanny.traxivity.database.dayTiming.DbTiming;
 import com.fanny.traxivity.model.Alarm;
 import com.fanny.traxivity.model.SetAlarm;
+import com.fanny.traxivity.model.historyAPI.HistoryService;
+import com.fanny.traxivity.model.historyAPI.UpdateHistory;
 import com.fanny.traxivity.view.AddNewActivity;
 import com.fanny.traxivity.admin.view.activities.MainMenu;
 import com.fanny.traxivity.model.SlidingTabLayout;
@@ -26,7 +34,10 @@ import com.fanny.traxivity.model.ViewPagerAdapter;
 import com.fanny.traxivity.view.GoalInputActivity;
 import com.fanny.traxivity.view.LoginActivity;
 import com.fanny.traxivity.view.SettingsActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,7 +55,7 @@ import io.realm.Realm;
  */
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private DatabaseReference mDataBase;
     private CharSequence Titles[]={"Day","Week","Month"};
@@ -136,6 +147,13 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        HistoryService hs = HistoryService.getInstance();
+        if (hs.isClientNull()) {
+            hs.buildFitnessClientHistory(this);
+        }
+
+        resetCounter(this);
     }
 
     public void createFolder(String nameFolder) {
@@ -184,5 +202,29 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void resetCounter(Context context) {
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, new Intent(context, UpdateHistory.class), PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime(),
+                60*1000,
+                pi);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
