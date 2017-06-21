@@ -1,4 +1,4 @@
-package com.fanny.traxivity.model.historyAPI;
+package com.fanny.traxivity.historyAPI;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

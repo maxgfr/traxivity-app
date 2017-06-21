@@ -1,23 +1,14 @@
-package com.fanny.traxivity.database.inactivity;
+package com.fanny.traxivity.historyAPI.inactivity;
 
-
-import com.fanny.traxivity.database.activity.DbActivity;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
-
 
 /**
- * Created by huextrat <www.hugoextrat.com>.
+ * Created by maxime on 6/21/2017.
  */
+
 
 public class InactivityManager {
 

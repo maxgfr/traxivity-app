@@ -1,4 +1,4 @@
-package com.fanny.traxivity.database.stepsManagerBeta;
+package com.fanny.traxivity.historyAPI;
 
 import android.util.Log;
 
@@ -15,7 +15,7 @@ import io.realm.Sort;
 
 
 /**
- * Created by huextrat <www.hugoextrat.com>.
+ * Created by maxime on 6/21/2017.
  */
 
 public class StepsManager {
@@ -36,7 +36,7 @@ public class StepsManager {
         lastAddedActivity = lastAddedActivityList.get(0);
 
         Map<Integer, DbSteps> map = getAllActivityDayByHours(new Date());
-        
+
         if(mySteps.isSpecial()){
             DbSteps newSteps = new DbSteps(mySteps.getStartTime(), mySteps.getEndTime(),mySteps.getNbSteps());
 
@@ -117,7 +117,7 @@ public class StepsManager {
         RealmResults<DbSteps> results = null;
         realm = Realm.getDefaultInstance();
         results = realm.where(DbSteps.class).equalTo("id",wantedDate.getDate()).distinct("hoursRange");
-                //.findAllSorted("startTime", Sort.DESCENDING);
+        //.findAllSorted("startTime", Sort.DESCENDING);
         return realm.copyFromRealm(results);
     }
 

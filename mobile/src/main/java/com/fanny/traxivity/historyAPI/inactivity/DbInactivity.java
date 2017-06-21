@@ -1,11 +1,11 @@
-package com.fanny.traxivity.database.inactivity;
+package com.fanny.traxivity.historyAPI.inactivity;
 
 import java.util.Date;
 
 import io.realm.RealmObject;
 
 /**
- * Created by huextrat <www.hugoextrat.com>.
+ * Created by maxime on 6/21/2017.
  */
 
 public class DbInactivity extends RealmObject {
@@ -26,6 +26,7 @@ public class DbInactivity extends RealmObject {
     public Date getStartTime() {
         return startTime;
     }
+
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
@@ -33,6 +34,7 @@ public class DbInactivity extends RealmObject {
     public int getNbHours() {
         return nbHours;
     }
+
     public void setNbHours(Integer nbHours) {
         this.nbHours = nbHours;
     }
@@ -40,6 +42,7 @@ public class DbInactivity extends RealmObject {
     public int getNbMinutes() {
         return nbMinutes;
     }
+
     public void setNbMinutes(Integer nbMinutes) {
         this.nbMinutes = nbMinutes;
     }
@@ -52,7 +55,7 @@ public class DbInactivity extends RealmObject {
         this.nbMinutes = nbMinutes;
     }
 
-    public DbInactivity(){
+    public DbInactivity() {
 
     }
 }

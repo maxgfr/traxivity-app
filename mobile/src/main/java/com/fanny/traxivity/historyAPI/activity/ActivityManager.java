@@ -1,10 +1,6 @@
-package com.fanny.traxivity.database.activity;
+package com.fanny.traxivity.historyAPI.activity;
 
-import android.app.Activity;
 import android.util.Log;
-import android.view.ViewGroup;
-
-import com.google.android.gms.drive.events.ChangeListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,17 +8,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-
 /**
- * Created by huextrat <www.hugoextrat.com>.
+ * Created by maxime on 6/21/2017.
  */
 
 public class ActivityManager {

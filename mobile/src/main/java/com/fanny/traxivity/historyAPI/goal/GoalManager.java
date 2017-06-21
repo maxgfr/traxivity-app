@@ -1,6 +1,4 @@
-package com.fanny.traxivity.database.goal;
-
-import android.util.Log;
+package com.fanny.traxivity.historyAPI.goal;
 
 import java.util.Date;
 import java.util.List;
@@ -10,7 +8,7 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 
 /**
- * Created by huextrat <www.hugoextrat.com>.
+ * Created by maxime on 6/21/2017.
  */
 
 public class GoalManager {

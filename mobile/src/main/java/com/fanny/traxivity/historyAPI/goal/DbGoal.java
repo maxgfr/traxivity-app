@@ -1,14 +1,12 @@
-package com.fanny.traxivity.database.goal;
-
-import com.google.android.gms.fitness.data.Goal;
+package com.fanny.traxivity.historyAPI.goal;
 
 import java.util.Date;
 
 import io.realm.RealmObject;
-import io.realm.annotations.Required;
+
 
 /**
- * Created by huextrat <www.hugoextrat.com>.
+ * Created by maxime on 6/21/2017.
  */
 
 public class DbGoal extends RealmObject {

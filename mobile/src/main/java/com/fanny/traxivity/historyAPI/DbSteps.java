@@ -1,11 +1,11 @@
-package com.fanny.traxivity.database.stepsManagerBeta;
+package com.fanny.traxivity.historyAPI;
 
 import java.util.Date;
 
 import io.realm.RealmObject;
 
 /**
- * Created by huextrat <www.hugoextrat.com>.
+ * Created by maxime on 6/21/2017.
  */
 
 public class DbSteps extends RealmObject {

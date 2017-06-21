@@ -2,8 +2,8 @@ package com.fanny.traxivity.model;
 
 import android.content.Context;
 
-import com.fanny.traxivity.database.dayTiming.DayTimingManager;
-import com.fanny.traxivity.database.dayTiming.DbTiming;
+import com.fanny.traxivity.historyAPI.dayTiming.DayTimingManager;
+import com.fanny.traxivity.historyAPI.dayTiming.DbTiming;
 
 import java.util.Calendar;
 

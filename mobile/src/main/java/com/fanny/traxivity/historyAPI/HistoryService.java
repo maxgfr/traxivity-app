@@ -1,4 +1,4 @@
-package com.fanny.traxivity.model.historyAPI;
+package com.fanny.traxivity.historyAPI;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -6,10 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.fanny.traxivity.MainActivity;
-import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
-import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
-import com.fanny.traxivity.model.ListenerService;
-import com.fanny.traxivity.view.LoginActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -25,6 +21,8 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import io.realm.Realm;
 
 /**
  * Created by maxime on 14-Jun-17.
@@ -76,7 +74,7 @@ public class HistoryService implements GoogleApiClient.ConnectionCallbacks,
         if (mClient == null) {
             System.out.println("Client NULL");
         }
-        DailyTotalResult result = Fitness.HistoryApi.readDailyTotal( mClient, DataType.TYPE_STEP_COUNT_DELTA ).await(1, TimeUnit.SECONDS);
+        DailyTotalResult result = Fitness.HistoryApi.readDailyTotal( mClient, DataType.TYPE_STEP_COUNT_DELTA ).await(1, TimeUnit.MINUTES);
         showDataSet(result.getTotal());
     }
 
@@ -85,6 +83,7 @@ public class HistoryService implements GoogleApiClient.ConnectionCallbacks,
         Log.e("History", "Data returned for Data type: " + dataSet.getDataType().getName());
         DateFormat dateFormat = DateFormat.getDateInstance();
         DateFormat timeFormat = DateFormat.getTimeInstance();
+
         for (DataPoint dp : dataSet.getDataPoints()) {
             System.out.println("DataPoint");
             Log.e("History", "Data point:");

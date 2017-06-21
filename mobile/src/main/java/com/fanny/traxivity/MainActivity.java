@@ -21,12 +21,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.fanny.traxivity.database.dayTiming.DayTimingManager;
-import com.fanny.traxivity.database.dayTiming.DbTiming;
-import com.fanny.traxivity.model.Alarm;
-import com.fanny.traxivity.model.SetAlarm;
-import com.fanny.traxivity.model.historyAPI.HistoryService;
-import com.fanny.traxivity.model.historyAPI.UpdateHistory;
+import com.fanny.traxivity.historyAPI.dayTiming.DayTimingManager;
+import com.fanny.traxivity.historyAPI.dayTiming.DbTiming;
+import com.fanny.traxivity.historyAPI.HistoryService;
+import com.fanny.traxivity.historyAPI.UpdateHistory;
 import com.fanny.traxivity.view.AddNewActivity;
 import com.fanny.traxivity.admin.view.activities.MainMenu;
 import com.fanny.traxivity.model.SlidingTabLayout;
@@ -37,7 +35,6 @@ import com.fanny.traxivity.view.SettingsActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,8 +42,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.Set;
 
 import io.realm.Realm;
 

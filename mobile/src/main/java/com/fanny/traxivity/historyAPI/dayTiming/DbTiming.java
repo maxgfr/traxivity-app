@@ -1,10 +1,11 @@
-package com.fanny.traxivity.database.dayTiming;
+package com.fanny.traxivity.historyAPI.dayTiming;
 
 import io.realm.RealmObject;
 
 /**
- * Created by huextrat <www.hugoextrat.com>.
+ * Created by maxime on 6/21/2017.
  */
+
 
 public class DbTiming extends RealmObject {
     private String name;
