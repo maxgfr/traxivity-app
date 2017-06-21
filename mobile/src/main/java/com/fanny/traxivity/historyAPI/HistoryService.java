@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.fanny.traxivity.MainActivity;
+import com.fanny.traxivity.historyAPI.steps.StepsManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -94,12 +95,8 @@ public class HistoryService implements GoogleApiClient.ConnectionCallbacks,
                 //Log.e("History", "\tField: " + field.getName() + " Value: " + dp.getValue(field));
                 System.out.println("UPDATE STEP");
                 int stepcount = dp.getValue(field).asInt();
-                StepsManager managerSteps = new StepsManager();
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(cal.get(Calendar.MILLISECOND));
-                Date d = cal.getTime();
-                DbSteps newActivity = new DbSteps(d, stepcount);
-                managerSteps.insertNew(newActivity);
+                //StepsManager managerSteps = new StepsManager();
+                //managerSteps.setStepTotal(stepcount);
             }
         }
     }

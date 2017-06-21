@@ -7,10 +7,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.fanny.traxivity.historyAPI.goal.DbGoal;
 import com.fanny.traxivity.historyAPI.goal.GoalManager;
 import com.fanny.traxivity.historyAPI.inactivity.InactivityManager;
-import com.fanny.traxivity.historyAPI.StepsManager;
+import com.fanny.traxivity.historyAPI.steps.StepsManager;
 import com.fanny.traxivity.model.DateUtil;
 import com.fanny.traxivity.model.MyXAxisValueFormatterDays;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -75,7 +76,6 @@ public class WeeklyTab extends Fragment {
         yAxisR2.setDrawGridLines(false); // no grid lines
         yAxisR2.setDrawZeroLine(true); // draw a zero line*/
         //ActivityManager managerActivity = new ActivityManager();
-        managerSteps = new StepsManager();
         final GoalManager managerGoal = new GoalManager();
         final InactivityManager managerInactivity = new InactivityManager();
         final DbGoal dailyGoalSteps = managerGoal.goalStepsDaily(currentDate);
@@ -129,6 +129,7 @@ public class WeeklyTab extends Fragment {
             yAxisR.setAxisMaximum(timeDuration*1.5f);
             yAxisL.setAxisMaximum(timeDuration*1.5f);
             float duration;
+            managerSteps = new StepsManager();
             for(int i=0;i<7;i++) {
                 duration = (float) managerSteps.getTotalStepsDay(dateImpl);
                 duration = duration/3600f; //TO get Hours of activity

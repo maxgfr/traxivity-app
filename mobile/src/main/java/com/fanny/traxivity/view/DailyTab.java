@@ -19,8 +19,7 @@ import com.fanny.traxivity.historyAPI.dayTiming.DbTiming;
 import com.fanny.traxivity.historyAPI.goal.DbGoal;
 import com.fanny.traxivity.historyAPI.goal.GoalManager;
 import com.fanny.traxivity.historyAPI.inactivity.DbInactivity;
-import com.fanny.traxivity.historyAPI.DbSteps;
-import com.fanny.traxivity.historyAPI.StepsManager;
+import com.fanny.traxivity.historyAPI.steps.StepsManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -245,7 +244,6 @@ public class DailyTab extends Fragment {
         realm.delete(DbActivity.class);
         realm.delete(DbGoal.class);
         realm.delete(DbInactivity.class);
-        realm.delete(DbSteps.class);
         realm.delete(DbTiming.class);
         realm.commitTransaction();
     }

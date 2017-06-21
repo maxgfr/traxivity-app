@@ -1,11 +1,7 @@
 package com.fanny.traxivity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -21,10 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.fanny.traxivity.historyAPI.dayTiming.DayTimingManager;
-import com.fanny.traxivity.historyAPI.dayTiming.DbTiming;
 import com.fanny.traxivity.historyAPI.HistoryService;
-import com.fanny.traxivity.historyAPI.UpdateHistory;
 import com.fanny.traxivity.view.AddNewActivity;
 import com.fanny.traxivity.admin.view.activities.MainMenu;
 import com.fanny.traxivity.model.SlidingTabLayout;
@@ -148,7 +141,6 @@ public class MainActivity extends AppCompatActivity
             hs.buildFitnessClientHistory(this);
         }
 
-        resetCounter(this);
     }
 
     public void createFolder(String nameFolder) {
@@ -197,15 +189,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void resetCounter(Context context) {
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, new Intent(context, UpdateHistory.class), PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime(),
-                60*1000,
-                pi);
     }
 
     @Override

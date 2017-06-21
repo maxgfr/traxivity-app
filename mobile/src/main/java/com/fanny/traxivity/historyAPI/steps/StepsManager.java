@@ -1,4 +1,4 @@
-package com.fanny.traxivity.historyAPI;
+package com.fanny.traxivity.historyAPI.steps;
 
 import android.util.Log;
 
@@ -12,7 +12,6 @@ import java.util.Map;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
-
 
 /**
  * Created by maxime on 6/21/2017.

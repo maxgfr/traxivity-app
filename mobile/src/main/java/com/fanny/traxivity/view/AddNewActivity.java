@@ -19,8 +19,7 @@ import android.widget.TextView;
 import com.fanny.traxivity.MainActivity;
 import com.fanny.traxivity.R;
 import com.fanny.traxivity.admin.controller.ActivityConversionDAO;
-import com.fanny.traxivity.historyAPI.DbSteps;
-import com.fanny.traxivity.historyAPI.StepsManager;
+import com.fanny.traxivity.historyAPI.steps.StepsManager;
 import com.fanny.traxivity.model.ActivityToSteps;
 import com.fanny.traxivity.dialogs.datePickerDialog;
 import com.fanny.traxivity.dialogs.timePickerDialog;
@@ -145,8 +144,8 @@ public class AddNewActivity extends AppCompatActivity {
 
                     Log.d("test",activityToNbSteps+"");
 
-                    DbSteps newSteps = new DbSteps(start.getTime(),end.getTime(),(int)activityToNbSteps*((nbHours*60)+(nbMinutes)));
-                    managerSteps.insertNew(newSteps);
+                    //DbSteps newSteps = new DbSteps(start.getTime(),end.getTime(),(int)activityToNbSteps*((nbHours*60)+(nbMinutes)));
+                    //managerSteps.insertNew(newSteps);
                 }
                 else{
                     Exception e = task.getException();
