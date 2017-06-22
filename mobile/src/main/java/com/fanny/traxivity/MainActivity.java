@@ -2,6 +2,7 @@ package com.fanny.traxivity;
 
 import android.content.Intent;
 import android.content.IntentSender;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -20,13 +21,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.fanny.traxivity.database.dayTiming.DayTimingManager;
-import com.fanny.traxivity.database.dayTiming.DbTiming;
-import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
-import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
-import com.fanny.traxivity.model.Alarm;
-import com.fanny.traxivity.model.SendFileService;
-import com.fanny.traxivity.model.SetAlarm;
+import com.fanny.traxivity.history.StepsManager;
+import com.fanny.traxivity.history.ViewMonthTask;
+import com.fanny.traxivity.history.ViewWeekTask;
 import com.fanny.traxivity.view.AddNewActivity;
 import com.fanny.traxivity.admin.view.activities.MainMenu;
 import com.fanny.traxivity.model.SlidingTabLayout;
@@ -39,11 +36,14 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DailyTotalResult;
+import com.google.android.gms.fitness.result.DataReadResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,9 +52,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -177,6 +180,9 @@ public class MainActivity extends AppCompatActivity
 
         mApiClient.connect();
 
+        new ViewWeekTask().execute(mApiClient);
+        new ViewMonthTask().execute(mApiClient);
+
     }
 
     public void createFolder(String nameFolder) {
@@ -233,7 +239,7 @@ public class MainActivity extends AppCompatActivity
         Timer timer = new Timer();
         final Handler handler = new Handler();
 
-        final StepsManager managerSteps = new StepsManager();
+        final StepsManager managerSteps = StepsManager.getInstance();
 
         timer.schedule(new TimerTask() {
             @Override
@@ -246,11 +252,7 @@ public class MainActivity extends AppCompatActivity
                     final Field field = dataPoint.getDataType().getFields().get(0);
 
                     int stepcount = dataPoint.getValue(field).asInt();
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTimeInMillis(System.currentTimeMillis());
-                    Date d = cal.getTime();
-                    DbSteps newActivity = new DbSteps(d, stepcount);
-                    managerSteps.insertNew(newActivity);
+                    managerSteps.setStepTotal(stepcount);
                     if (stepcount != gStepCount) {
                         gStepCount = stepcount;
                         MainActivity.this.sendBroadcast(new Intent().setAction("bcNewSteps"));
@@ -303,4 +305,5 @@ public class MainActivity extends AppCompatActivity
             System.out.println("request code not REQUEST_OAUTH");
         }
     }
+
 }

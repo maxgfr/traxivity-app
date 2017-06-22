@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.fanny.traxivity.database.goal.DbGoal;
 import com.fanny.traxivity.database.goal.GoalManager;
 import com.fanny.traxivity.database.inactivity.InactivityManager;
-import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
+import com.fanny.traxivity.history.StepsManager;
 import com.fanny.traxivity.model.DateUtil;
 import com.fanny.traxivity.model.MyXAxisValueFormatterDays;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -75,7 +75,7 @@ public class WeeklyTab extends Fragment {
         yAxisR2.setDrawGridLines(false); // no grid lines
         yAxisR2.setDrawZeroLine(true); // draw a zero line*/
         //ActivityManager managerActivity = new ActivityManager();
-        managerSteps = new StepsManager();
+        managerSteps = StepsManager.getInstance();
         final GoalManager managerGoal = new GoalManager();
         final InactivityManager managerInactivity = new InactivityManager();
         final DbGoal dailyGoalSteps = managerGoal.goalStepsDaily(currentDate);

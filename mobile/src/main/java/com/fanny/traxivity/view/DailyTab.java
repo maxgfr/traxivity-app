@@ -19,8 +19,7 @@ import com.fanny.traxivity.database.dayTiming.DbTiming;
 import com.fanny.traxivity.database.goal.DbGoal;
 import com.fanny.traxivity.database.goal.GoalManager;
 import com.fanny.traxivity.database.inactivity.DbInactivity;
-import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
-import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
+import com.fanny.traxivity.history.StepsManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -86,7 +85,7 @@ public class DailyTab extends Fragment {
 
         managerActivity = new ActivityManager();
         managerGoal = new GoalManager();
-        managerSteps = new StepsManager();
+        managerSteps = StepsManager.getInstance();
 
         entries = new ArrayList<>();
         final DbGoal dailyGoalSteps = managerGoal.goalStepsDaily(currentDate);
@@ -245,7 +244,6 @@ public class DailyTab extends Fragment {
         realm.delete(DbActivity.class);
         realm.delete(DbGoal.class);
         realm.delete(DbInactivity.class);
-        realm.delete(DbSteps.class);
         realm.delete(DbTiming.class);
         realm.commitTransaction();
     }

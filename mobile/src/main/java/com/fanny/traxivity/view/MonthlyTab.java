@@ -10,13 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.fanny.traxivity.R;
-import com.fanny.traxivity.database.activity.ActivityManager;
-import com.fanny.traxivity.database.activity.DbActivity;
-import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
-import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
+import com.fanny.traxivity.history.StepsManager;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -36,7 +32,7 @@ public class MonthlyTab extends Fragment {
 
         ListView listView = (ListView) v.findViewById(R.id.listview);
 
-        StepsManager managerSteps = new StepsManager();
+        StepsManager managerSteps = StepsManager.getInstance();
 
 
         Map<Integer, Integer> mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(new Date());
