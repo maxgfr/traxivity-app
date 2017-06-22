@@ -28,7 +28,7 @@ import io.realm.RealmConfiguration;
  * Created by huextrat <www.hugoextrat.com>.
  */
 
-public class LoginActivity extends AppCompatActivity  {
+public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_LOGIN = 0;

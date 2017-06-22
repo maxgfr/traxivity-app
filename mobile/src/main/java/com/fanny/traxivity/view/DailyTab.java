@@ -13,13 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.fanny.traxivity.historyAPI.activity.ActivityManager;
-import com.fanny.traxivity.historyAPI.activity.DbActivity;
-import com.fanny.traxivity.historyAPI.dayTiming.DbTiming;
-import com.fanny.traxivity.historyAPI.goal.DbGoal;
-import com.fanny.traxivity.historyAPI.goal.GoalManager;
-import com.fanny.traxivity.historyAPI.inactivity.DbInactivity;
-import com.fanny.traxivity.historyAPI.steps.StepsManager;
+import com.fanny.traxivity.database.activity.ActivityManager;
+import com.fanny.traxivity.database.activity.DbActivity;
+import com.fanny.traxivity.database.dayTiming.DbTiming;
+import com.fanny.traxivity.database.goal.DbGoal;
+import com.fanny.traxivity.database.goal.GoalManager;
+import com.fanny.traxivity.database.inactivity.DbInactivity;
+import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
+import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -244,6 +245,7 @@ public class DailyTab extends Fragment {
         realm.delete(DbActivity.class);
         realm.delete(DbGoal.class);
         realm.delete(DbInactivity.class);
+        realm.delete(DbSteps.class);
         realm.delete(DbTiming.class);
         realm.commitTransaction();
     }

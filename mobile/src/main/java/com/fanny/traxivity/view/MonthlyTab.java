@@ -10,9 +10,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.fanny.traxivity.R;
-import com.fanny.traxivity.historyAPI.steps.StepsManager;
+import com.fanny.traxivity.database.activity.ActivityManager;
+import com.fanny.traxivity.database.activity.DbActivity;
+import com.fanny.traxivity.database.stepsManagerBeta.DbSteps;
+import com.fanny.traxivity.database.stepsManagerBeta.StepsManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;

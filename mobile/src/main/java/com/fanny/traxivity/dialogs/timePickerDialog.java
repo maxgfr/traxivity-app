@@ -5,17 +5,19 @@ import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.format.DateFormat;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.fanny.traxivity.R;
-import com.fanny.traxivity.historyAPI.dayTiming.DayTimingManager;
-import com.fanny.traxivity.historyAPI.dayTiming.DbTiming;
+import com.fanny.traxivity.database.dayTiming.DayTimingManager;
+import com.fanny.traxivity.database.dayTiming.DbTiming;
 import com.fanny.traxivity.model.SetAlarm;
 import com.fanny.traxivity.view.AddNewActivity;
 import com.fanny.traxivity.view.SettingsActivity;
 
 import java.util.Calendar;
+import java.util.Set;
 
 /**
  * Created by almabire.

@@ -1,4 +1,5 @@
 package com.fanny.traxivity.view;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +16,8 @@ import com.fanny.traxivity.MainActivity;
 import com.fanny.traxivity.R;
 import com.fanny.traxivity.admin.controller.InformationDAO;
 import com.fanny.traxivity.admin.model.Information;
-import com.fanny.traxivity.historyAPI.activity.ActivityManager;
+import com.fanny.traxivity.database.activity.ActivityManager;
+import com.fanny.traxivity.dialogs.textDialogInactivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;

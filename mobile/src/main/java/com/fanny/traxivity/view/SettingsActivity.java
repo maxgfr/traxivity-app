@@ -12,9 +12,10 @@ import android.widget.TextView;
 
 import com.fanny.traxivity.MainActivity;
 import com.fanny.traxivity.R;
-import com.fanny.traxivity.historyAPI.dayTiming.DayTimingManager;
-import com.fanny.traxivity.historyAPI.dayTiming.DbTiming;
+import com.fanny.traxivity.database.dayTiming.DayTimingManager;
+import com.fanny.traxivity.database.dayTiming.DbTiming;
 import com.fanny.traxivity.dialogs.timePickerDialog;
+import com.fanny.traxivity.model.SetAlarm;
 
 import java.util.List;
 
