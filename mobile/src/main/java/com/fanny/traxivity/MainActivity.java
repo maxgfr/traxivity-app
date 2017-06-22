@@ -21,7 +21,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.fanny.traxivity.history.HistoryService;
 import com.fanny.traxivity.history.StepsManager;
+import com.fanny.traxivity.history.ViewHourPerDay;
 import com.fanny.traxivity.history.ViewMonthTask;
 import com.fanny.traxivity.history.ViewWeekTask;
 import com.fanny.traxivity.view.AddNewActivity;
@@ -36,6 +38,7 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.fitness.Fitness;
+import com.google.android.gms.fitness.HistoryApi;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
@@ -179,10 +182,6 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         mApiClient.connect();
-
-        new ViewWeekTask().execute(mApiClient);
-        new ViewMonthTask().execute(mApiClient);
-
     }
 
     public void createFolder(String nameFolder) {
@@ -268,9 +267,13 @@ public class MainActivity extends AppCompatActivity
                     });
                     */
                     System.out.println("GFit Service"+field.getName() + ": " + dataPoint.getValue(field));
+
                 }
             }
         }, 0, 30000);
+        new ViewWeekTask().execute(mApiClient);
+        new ViewMonthTask().execute(mApiClient);
+        new ViewHourPerDay().execute(mApiClient);
     }
 
     @Override

@@ -16,10 +16,6 @@ public class StepsManager {
     private Map<Integer, Integer> stepsByHourOneDay;
     private Map<Integer, Integer> stepPerDayOneWeek;
     private Map<Integer, Integer> stepPerDayOneMonth;
-    
-    private Date start;
-    private Date end;
-    private int duration;
 
     private static StepsManager INSTANCE = null;
 
@@ -40,7 +36,7 @@ public class StepsManager {
         stepTotal = step;
     }
 
-    public int getTotalStepsDay(Date currentDate) {
+    public int getTotalStepsDay() {
         return stepTotal;
     }
 
@@ -60,7 +56,6 @@ public class StepsManager {
         stepPerDayOneWeek = map;
     }
 
-
     public Map<Integer,Integer> getStepPerDayOneMonth () {
         return stepPerDayOneMonth;
     }
@@ -69,7 +64,4 @@ public class StepsManager {
         stepPerDayOneMonth = map;
     }
 
-
-    public void insertNewActivity(Date time, Date time1, int i) {
-    }
 }

@@ -105,20 +105,20 @@ public class DailyTab extends Fragment {
                         set.clear();
                     }
                     yAxisR.setAxisMaximum(dailyGoalSteps.getStepsNumber() * 2f);
-                    Integer nbsteps;
-                    Map<Integer, Integer> mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
-                    for (Integer i = 0; i < 24; i++) {
-                        nbsteps = mapStepsDayByHour.get(i);
-
-                        if (nbsteps == null) {
-                            entries.add(new BarEntry((float) i, 0f));
-                            Log.w("Nbsteps", i.toString());
-
-                        } else {
-                            entries.add(new BarEntry((float) i, (float) nbsteps));
-                            Log.w("Nbsteps", nbsteps.toString());
-                        }
+                    Integer nbsteps = 0;
+                    int i =0;
+                    Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepsByHourOneDay();
+                    for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+                        nbsteps = entry.getValue();
+                        entries.add(new BarEntry((float) entry.getKey(), nbsteps));
+                        i++;
                     }
+
+                    while (i<24) {
+                        entries.add(new BarEntry((float) i, 0f));
+                        i++;
+                    }
+
                     set = new BarDataSet(entries, "Steps");
                     graphChart.invalidate();
                 }
@@ -126,15 +126,13 @@ public class DailyTab extends Fragment {
 
             getActivity().registerReceiver(broadCastNewMessage, new IntentFilter("bcNewSteps"));
 
-            int total = 0;
-            mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
-            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
-                total = total + entry.getValue();
-            }
 
-            dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, total), 2000);
+
+            int tot = managerSteps.getTotalStepsDay();
+
+            dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, tot), 2000);
             dailyCircle.setTextMode(TextMode.TEXT);
-            dailyCircle.setText(total + " steps");
+            dailyCircle.setText(tot + " steps");
 
             dailyCircle.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -150,23 +148,23 @@ public class DailyTab extends Fragment {
             dailyGoalTv.setText(dailyGoalSteps.getStepsNumber() + " steps");
             yAxisR.setAxisMaximum(dailyGoalSteps.getStepsNumber() * 2f);
 
-            Integer nbsteps;
-            mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
-            for (Integer i = 0; i < 24; i++) {
-                nbsteps = mapStepsDayByHour.get(i);
-
-                if (nbsteps == null) {
-                    entries.add(new BarEntry((float) i, 0f));
-                    Log.w("Nbsteps", i.toString());
-
-                } else {
-                    entries.add(new BarEntry((float) i, (float) nbsteps));
-                    Log.w("Nbsteps", nbsteps.toString());
-                }
+            Integer nbsteps = 0;
+            int i =0;
+            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepsByHourOneDay();
+            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+                nbsteps = entry.getValue();
+                entries.add(new BarEntry((float) entry.getKey(), nbsteps));
+                i++;
             }
+
+            while (i<24) {
+                entries.add(new BarEntry((float) i, 0f));
+                i++;
+            }
+
             set = new BarDataSet(entries, "Steps");
         } else if (dailyGoalDuration != null) {
-            dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, managerSteps.getTotalStepsDay(currentDate)), 2000);
+            dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, managerSteps.getTotalStepsDay()), 2000);
             dailyCircle.setTextMode(TextMode.TEXT);
             dailyCircle.setText(managerActivity.getTotalStepsDay(currentDate) + " steps");
             dailyCircle.setOnClickListener(new View.OnClickListener() {
@@ -198,19 +196,20 @@ public class DailyTab extends Fragment {
 
             yAxisR.setAxisMaximum((float) dailyGoalDuration.getDuration() * 2f);
 
-            Integer activityTime;
-            Map<Integer, Integer> mapTimeDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
-            for (Integer i = 0; i < 24; i++) {
-                activityTime = mapTimeDayByHour.get(i);
+            Integer value = 0;
+            int i =0;
+            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepsByHourOneDay();
 
-                if (activityTime == null) {
-                    entries.add(new BarEntry((float) i, 0f));
-                    Log.w("Nbsteps", i.toString());
+            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+                value = mapStepsDayByHour.get(i);
+                entries.add(new BarEntry((float) i, (float) value));
+                i++;
+            }
 
-                } else {
-                    entries.add(new BarEntry((float) i, (float) activityTime));
-                    Log.w("Nbsteps", activityTime.toString());
-                }
+            while (i<24) {
+                entries.add(new BarEntry((float) i, 0f));
+                Log.w("Nbsteps", "key");
+                i++;
             }
 
             set = new BarDataSet(entries, "Time");
@@ -256,10 +255,7 @@ public class DailyTab extends Fragment {
 
     public void updateCircleStepsText() {
         int total = 0;
-        mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
-        for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
-            total = total + entry.getValue();
-        }
+        total = managerSteps.getTotalStepsDay();
 
         dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, total), 2000);
         dailyCircle.setUnit("");
@@ -271,10 +267,7 @@ public class DailyTab extends Fragment {
 
     public void updateCircleStepsPercent() {
         int total = 0;
-        mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(currentDate);
-        for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
-            total = total + entry.getValue();
-        }
+        total = managerSteps.getTotalStepsDay();
 
         dailyCircle.setValueAnimated(0, managerGoal.goalStatusStepsDaily(currentDate, total), 2000);
         dailyCircle.setTextMode(TextMode.PERCENT);

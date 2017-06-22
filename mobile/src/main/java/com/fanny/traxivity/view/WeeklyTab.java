@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * Created by huextrat <www.hugoextrat.com>.
  */
@@ -103,19 +104,12 @@ public class WeeklyTab extends Fragment {
             yAxisL.addLimitLine(limitLine);
             yAxisR.setAxisMaximum(stepsNumber*1.5f);
             yAxisL.setAxisMaximum(stepsNumber*1.5f);
-            for(int i=0;i<7;i++) {
-                int total = 0;
-                mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(dateImpl);
-                for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
-                    total = total + entry.getValue();
-                }
-                entries.add(new BarEntry((float) i, (float) total));
-               /* inactivityDuration = (float) managerInactivity.getTotalInactivityDay(dateImpl);
-                inactivityDuration = inactivityDuration/3600f;
-                entries2.add(new BarEntry((float) i, inactivityDuration));*/
-                dateImpl = DateUtil.addDays(dateImpl,1);
+            ArrayList<BarEntry> entryy = new ArrayList<>();
+            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepPerDayOneWeek();
+            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+                entries.add(new BarEntry((float)entry.getValue(),entry.getKey()));
             }
-            set = new BarDataSet(entries, "Steps");
+            set = new BarDataSet(entryy, "Time");
             //  set2 = new BarDataSet(entries2, "Inactivity");
         }
         else if(dailyGoalDuration != null){
@@ -129,21 +123,24 @@ public class WeeklyTab extends Fragment {
             yAxisR.setAxisMaximum(timeDuration*1.5f);
             yAxisL.setAxisMaximum(timeDuration*1.5f);
             float duration;
-            for(int i=0;i<7;i++) {
-                duration = (float) managerSteps.getTotalStepsDay(dateImpl);
-                duration = duration/3600f; //TO get Hours of activity
-                entries.add(new BarEntry((float) i, duration));
-                inactivityDuration = (float) managerInactivity.getTotalInactivityDay(dateImpl);
-                inactivityDuration = inactivityDuration/3600f;
-                //entries2.add(new BarEntry((float) i, inactivityDuration));
-                dateImpl = DateUtil.addDays(dateImpl,1);
+
+            ArrayList<BarEntry> entryy = new ArrayList<>();
+            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepPerDayOneWeek();
+            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+                entries.add(new BarEntry((float)entry.getValue(),entry.getKey()));
             }
-            set = new BarDataSet(entries, "Time");
+            set = new BarDataSet(entryy, "Time");
             // set2 = new BarDataSet(entries2, "Inactivity");
         }
         else {
             // weeklyGoalTv.setText("No goal set");
-            set = new BarDataSet(entries, "Activity");
+
+            ArrayList<BarEntry> entryy = new ArrayList<>();
+            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepPerDayOneWeek();
+            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+                entries.add(new BarEntry((float)entry.getValue(),entry.getKey()));
+            }
+            set = new BarDataSet(entryy, "Time");
             // set2 = new BarDataSet(entries2, "Inactivity");
             yAxisR.setAxisMaximum(500f);
             yAxisL.setAxisMaximum(500f);        }
@@ -152,6 +149,7 @@ public class WeeklyTab extends Fragment {
         data2.setBarWidth(0.6f); // set custom bar width
         graphChart2.setData(data2);
         graphChart2.invalidate();*/
+
         BarData data = new BarData(set);
         data.setBarWidth(0.6f); // set custom bar width
         graphChart.setData(data);
@@ -159,3 +157,10 @@ public class WeeklyTab extends Fragment {
         return v;
     }
 }
+
+
+
+
+
+
+

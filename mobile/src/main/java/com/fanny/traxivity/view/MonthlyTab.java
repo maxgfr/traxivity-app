@@ -35,20 +35,24 @@ public class MonthlyTab extends Fragment {
         StepsManager managerSteps = StepsManager.getInstance();
 
 
-        Map<Integer, Integer> mapStepsDayByHour = managerSteps.getTotalStepsDayByHours(new Date());
+        Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepPerDayOneMonth();
         myListActivity = new ArrayList<>(mapStepsDayByHour.size());
         for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
-            myListActivity.add(entry.getKey()+"h"+" - "+entry.getValue()+" steps");
+            myListActivity.add(entry.getKey()+" DAYS AGO"+" - "+entry.getValue()+" STEPS");
         }
 
         Collections.sort(myListActivity, new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return  o1.compareTo(o2);
+            public int compare(String o1, String o2)
+            {
+                char num1 = o1.charAt(0);
+                char num2 = o1.charAt(1);
+                char num3 = o2.charAt(0);
+                char num4 = o2.charAt(1);
+                String sub1 =  new StringBuilder().append(num1).toString();
+                String sub2 =  new StringBuilder().append(num3).toString();
+                return sub1.compareTo (sub2);
             }
         });
-
-        Collections.reverse(myListActivity);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, myListActivity);
         listView.setAdapter(adapter);
