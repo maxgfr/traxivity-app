@@ -205,8 +205,8 @@ public class HistoryService {
                     System.out.println(format.format(new Date(dataPoint.getStartTime(TimeUnit.MILLISECONDS))));
                     System.out.println(format.format(new Date(dataPoint.getEndTime(TimeUnit.MILLISECONDS))));
                     for(Field field:dataPoint.getDataType().getFields()){
-                        mapHour.put(timeToDisplay, dataPoint.getValue(field).asInt()-oldHour);
                         totJourn +=dataPoint.getValue(field).asInt();
+                        mapHour.put(timeToDisplay, dataPoint.getValue(field).asInt()-oldHour);
                         //oldHour = dataPoint.getValue(field).asInt();
                         Log.e("History", "\tField: " + field.getName() +
                                 " Value: " + dataPoint.getValue(field));

@@ -4,15 +4,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.fanny.traxivity.MainActivity;
+import com.fanny.traxivity.R;
 import com.fanny.traxivity.view.DailyTab;
 import com.fanny.traxivity.view.MonthlyTab;
 import com.fanny.traxivity.view.WeeklyTab;
 
-public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class ViewPagerAdapter extends FragmentStatePagerAdapter{
 
     CharSequence Titles[]; // This will Store the Titles of the Tabs which are Going to be passed when ViewPagerAdapter is created
     int NumbOfTabs; // Store the number of tabs, this will also be passed when the ViewPagerAdapter is created
-
+    public WeeklyTab weeklyTab;
 
     // Build a Constructor and assign the passed Values to appropriate values in the class
     public ViewPagerAdapter(FragmentManager fm,CharSequence mTitles[], int mNumbOfTabsumb) {
@@ -34,15 +39,17 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         }
         else if(position == 1)
         {
-            WeeklyTab weeklyTab = new WeeklyTab();
+            weeklyTab = new WeeklyTab();
             return weeklyTab;
         }
         else {
             MonthlyTab monthlyTab = new MonthlyTab();
             return monthlyTab;
         }
+    }
 
-
+    public void refreshWeeklyTab () {
+        weeklyTab.refresh();
     }
 
     // This method return the titles for the Tabs in the Tab Strip

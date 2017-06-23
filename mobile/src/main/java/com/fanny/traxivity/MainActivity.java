@@ -8,6 +8,9 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
@@ -61,6 +64,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -85,12 +89,28 @@ public class MainActivity extends AppCompatActivity
     private String usernameString, emailString;
     private TextView username, email;
 
+    private ViewPagerAdapter adapter;
+
     private int gStepCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Fitness.HISTORY_API)
+                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ))
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                //.enableAutoManage()
+                .build();
+
+        mApiClient.connect();
+
+        new ViewWeekTask().execute(mApiClient);
+        new ViewMonthTask().execute(mApiClient);
+        new ViewHourPerDay().execute(mApiClient);
 
         Realm.init(this);
 
@@ -107,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         adminItem.setEnabled(false);
 
         int numboftabs = 3;
-        ViewPagerAdapter adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles, numboftabs);
+        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles, numboftabs);
 
         // Assigning ViewPager View and setting the adapter
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
@@ -173,15 +193,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Fitness.HISTORY_API)
-                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ))
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                //.enableAutoManage()
-                .build();
-
-        mApiClient.connect();
+        refresh ();
     }
 
     public void createFolder(String nameFolder) {
@@ -271,11 +283,18 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }, 0, 30000);
-        new ViewWeekTask().execute(mApiClient);
-        new ViewMonthTask().execute(mApiClient);
-        new ViewHourPerDay().execute(mApiClient);
     }
 
+    public void refresh () {
+        Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                adapter.refreshWeeklyTab();
+            }
+        }, 10000, 25000);
+    }
     @Override
     public void onConnectionSuspended(int i) {
 

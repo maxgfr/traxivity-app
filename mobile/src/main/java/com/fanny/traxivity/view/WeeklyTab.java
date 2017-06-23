@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +23,14 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.fanny.traxivity.R;
+
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -34,15 +40,52 @@ import java.util.Map;
 public class WeeklyTab extends Fragment {
     private StepsManager managerSteps;
     private BarDataSet set;
-    private Date dateImpl;
-    private Map<Integer, Integer> mapStepsDayByHour;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View v =inflater.inflate(R.layout.weekly_tab,container,false);
-        // DonutProgress weeklyCircle = (DonutProgress) v.findViewById(R.id.circle_progress_week);
-        //TextView weeklyGoalTv = (TextView) v.findViewById(R.id.goal_weekly);
+        v.setTag("TAG_WEEK");
+
+
+        managerSteps = StepsManager.getInstance();
+        Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepPerDayOneWeek();
+        List<Integer> myListActivity = new ArrayList<Integer>();
+        Calendar cal = Calendar.getInstance();
+        int actualDay = cal.get(Calendar.DAY_OF_WEEK);
+        System.out.println("ACTUAL DAY:" +actualDay);
+        switch (actualDay){
+            case 1: actualDay = 6;
+                break;
+            case 2: actualDay = 0;
+                break;
+            case 3: actualDay = 1;
+                break;
+            case 4: actualDay = 2;
+                break;
+            case 5: actualDay = 3;
+                break;
+            case 6: actualDay = 4;
+                break;
+            case 7: actualDay = 5;
+                break;
+        }
+        int j =0;
+        if (!mapStepsDayByHour.isEmpty()) {
+            while (j<7) {
+                for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
+                    if (entry.getKey() == j) {
+                        myListActivity.add(entry.getValue());
+                        j++;
+                    }
+                }
+            }
+        }
+
+        Collections.reverse(myListActivity);
+
         final Date currentDate = new Date();
         final HorizontalBarChart graphChart = (HorizontalBarChart) v.findViewById(R.id.barChart);
+
         graphChart.setScaleEnabled(false);
         graphChart.setDragEnabled(false);
         graphChart.setPinchZoom(false);
@@ -60,23 +103,7 @@ public class WeeklyTab extends Fragment {
         yAxisR.setDrawZeroLine(true); // draw a zero line
         yAxisL.setAxisMinimum(0f);
         yAxisR.setAxisMinimum(0f);
-        /*HorizontalBarChart graphChart2 = (HorizontalBarChart) v.findViewById(R.id.barChart2);
-        graphChart2.setScaleEnabled(false);
-        graphChart2.setDragEnabled(false);
-        graphChart2.setPinchZoom(false);
-        graphChart2.getDescription().setEnabled(false);
-        XAxis xAxis2 = graphChart2.getXAxis();
-        xAxis2.setAxisMaximum(6f);
-        xAxis2.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis2.setDrawGridLines(false);
-        graphChart2.getAxisLeft().setDrawGridLines(false);
-        YAxis yAxisR2 = graphChart2.getAxisRight();
-        yAxisR2.setDrawLabels(false); // no axis labels
-        yAxisR2.setDrawAxisLine(false); // no axis line
-        yAxisR2.setDrawGridLines(false); // no grid lines
-        yAxisR2.setDrawZeroLine(true); // draw a zero line*/
-        //ActivityManager managerActivity = new ActivityManager();
-        managerSteps = StepsManager.getInstance();
+
         final GoalManager managerGoal = new GoalManager();
         final InactivityManager managerInactivity = new InactivityManager();
         final DbGoal dailyGoalSteps = managerGoal.goalStepsDaily(currentDate);
@@ -84,80 +111,81 @@ public class WeeklyTab extends Fragment {
         final List<BarEntry> entries = new ArrayList<>();
         final Calendar c = Calendar.getInstance();
         c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        dateImpl = c.getTime();
 
         String[] dataXAxis = new String[]{
                 "Mon","Tue","Wed","Thu"," Fri","Sat","Sun"
         };
         MyXAxisValueFormatterDays xValueFromatter = new MyXAxisValueFormatterDays(dataXAxis);
         xAxis.setValueFormatter(xValueFromatter);
-        // BarDataSet set2;
+
         float inactivityDuration;
 
-        // List<BarEntry> entries2 = new ArrayList<>();
         if (dailyGoalSteps != null) {
             float stepsNumber = (float) dailyGoalSteps.getStepsNumber();
-           /* weeklyGoalTv.setText(Integer.toString(weeklyGoalSteps.getStepsNumber()) + " steps");
-            weeklyCircle.setProgress(managerGoal.goalStatusStepsWeekly(currentDate, managerActivity.getTotalStepsDay(currentDate)));*/
             LimitLine limitLine = new LimitLine(stepsNumber, "Goal");
             limitLine.setLineColor(Color.GREEN);
             yAxisL.addLimitLine(limitLine);
             yAxisR.setAxisMaximum(stepsNumber*1.5f);
             yAxisL.setAxisMaximum(stepsNumber*1.5f);
-            ArrayList<BarEntry> entryy = new ArrayList<>();
-            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepPerDayOneWeek();
-            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
-                entries.add(new BarEntry((float)entry.getValue(),entry.getKey()));
+            int temps = actualDay+1;
+            for(int i=0;i<temps;i++) {
+                if (!myListActivity.isEmpty()) {
+                    if (i==0) {
+                        entries.add(new BarEntry((float) actualDay, (float) managerSteps.getTotalStepsDay()));
+                    } else {
+                        entries.add(new BarEntry((float) actualDay-i, (float) myListActivity.get(i-1)));
+                    }
+                }
             }
-            set = new BarDataSet(entryy, "Time");
-            //  set2 = new BarDataSet(entries2, "Inactivity");
+            for(int i=temps;i<7;i++) {
+                if (!myListActivity.isEmpty()) {
+                    entries.add(new BarEntry((float) i, (float) 0));
+                }
+            }
+            set = new BarDataSet(entries, "Steps");
         }
         else if(dailyGoalDuration != null){
             float timeDuration = (float) dailyGoalDuration.getDuration();
             timeDuration = timeDuration/3600f;
-           /* weeklyGoalTv.setText(Double.toString(weeklyGoalDuration.getDuration()) + " seconds");
-            weeklyCircle.setProgress(managerGoal.goalStatusDurationWeekly(currentDate, managerActivity.getTotalActivityDay(currentDate)));*/
             LimitLine limitLine = new LimitLine(timeDuration, "Goal");
             limitLine.setLineColor(Color.GREEN);
             yAxisL.addLimitLine(limitLine);
             yAxisR.setAxisMaximum(timeDuration*1.5f);
             yAxisL.setAxisMaximum(timeDuration*1.5f);
-            float duration;
-
-            ArrayList<BarEntry> entryy = new ArrayList<>();
-            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepPerDayOneWeek();
-            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
-                entries.add(new BarEntry((float)entry.getValue(),entry.getKey()));
+            int temps = actualDay+1;
+            for(int i=0;i<temps;i++) {
+                if (!myListActivity.isEmpty()) {
+                    if (i==0) {
+                        entries.add(new BarEntry((float) actualDay, (float) managerSteps.getTotalStepsDay()));
+                    } else {
+                        entries.add(new BarEntry((float) actualDay-i, (float) myListActivity.get(i-1)));
+                    }
+                }
             }
-            set = new BarDataSet(entryy, "Time");
-            // set2 = new BarDataSet(entries2, "Inactivity");
+            for(int i=temps;i<7;i++) {
+                if (!myListActivity.isEmpty()) {
+                    entries.add(new BarEntry((float) i, (float) 0));
+                }
+            }
+            set = new BarDataSet(entries, "Time");
         }
         else {
-            // weeklyGoalTv.setText("No goal set");
-
-            ArrayList<BarEntry> entryy = new ArrayList<>();
-            Map<Integer, Integer> mapStepsDayByHour = managerSteps.getStepPerDayOneWeek();
-            for(Map.Entry<Integer, Integer> entry : mapStepsDayByHour.entrySet()){
-                entries.add(new BarEntry((float)entry.getValue(),entry.getKey()));
-            }
-            set = new BarDataSet(entryy, "Time");
-            // set2 = new BarDataSet(entries2, "Inactivity");
+            set = new BarDataSet(entries, "Activity");
             yAxisR.setAxisMaximum(500f);
-            yAxisL.setAxisMaximum(500f);        }
-      /*  set2.setColor(getResources().getColor(R.color.red));
-        BarData data2 = new BarData(set2);
-        data2.setBarWidth(0.6f); // set custom bar width
-        graphChart2.setData(data2);
-        graphChart2.invalidate();*/
-
+            yAxisL.setAxisMaximum(500f);
+        }
         BarData data = new BarData(set);
         data.setBarWidth(0.6f); // set custom bar width
         graphChart.setData(data);
         graphChart.invalidate();
         return v;
     }
-}
 
+    public void refresh () {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(this).attach(this).commit();
+    }
+}
 
 
 
