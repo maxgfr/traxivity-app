@@ -6,14 +6,17 @@ package com.fanny.traxivity.history;
 
 import android.util.Log;
 
+import com.fanny.traxivity.MainActivity;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
+import com.google.android.gms.fitness.request.DataUpdateRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
 
 import java.sql.Time;
@@ -163,16 +166,38 @@ public class HistoryService {
         }
     }
 
+    public void updateHistory (int stepCountDelta, Calendar start, Calendar stop) {
+        long endTime = stop.getTimeInMillis();
+        long startTime = start.getTimeInMillis();
+
+        DataSource dataSource = new DataSource.Builder()
+                .setAppPackageName(MainActivity.PACKAGE_NAME)
+                .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
+                .setName("Step Count")
+                .setType(DataSource.TYPE_RAW)
+                .build();
+
+        DataSet dataSet = DataSet.create(dataSource);
+
+        DataPoint point = dataSet.createDataPoint()
+                .setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS);
+        point.getValue(Field.FIELD_STEPS).setInt(stepCountDelta);
+        dataSet.add(point);
+
+        DataUpdateRequest updateRequest = new DataUpdateRequest.Builder().setDataSet(dataSet).setTimeInterval(startTime, endTime, TimeUnit.MILLISECONDS).build();
+        Fitness.HistoryApi.updateData(MainActivity.mApiClient, updateRequest).await(1, TimeUnit.MINUTES);
+    }
+
     public void displayHourPerDay(GoogleApiClient[] mClient) {
         GoogleApiClient mApiClient = mClient[0];
         int actualHour = new Time(System.currentTimeMillis()).getHours();
         StepsManager manager = StepsManager.getInstance();
-        int totalDay = manager.getTotalStepsDay();
+        //int totalDay = manager.getTotalStepsDay();
         for (int i=1 ; i<actualHour+1 ; i++) {
-            if (totJourn > totalDay) {
+            /*if (totJourn > totalDay) {
                 manager.setStepsByHourOneDay(mapHour);
                 return;
-            }
+            }*/
             int timeToDisplay = actualHour - i;
             Calendar cal = Calendar.getInstance();
             Date now = new Date();
@@ -205,9 +230,10 @@ public class HistoryService {
                     System.out.println(format.format(new Date(dataPoint.getStartTime(TimeUnit.MILLISECONDS))));
                     System.out.println(format.format(new Date(dataPoint.getEndTime(TimeUnit.MILLISECONDS))));
                     for(Field field:dataPoint.getDataType().getFields()){
-                        totJourn +=dataPoint.getValue(field).asInt();
-                        mapHour.put(timeToDisplay, dataPoint.getValue(field).asInt()-oldHour);
-                        //oldHour = dataPoint.getValue(field).asInt();
+                        //totJourn +=dataPoint.getValue(field).asInt();
+                        if (oldHour != dataPoint.getValue(field).asInt())
+                            mapHour.put(timeToDisplay, dataPoint.getValue(field).asInt()-oldHour);
+                        oldHour = dataPoint.getValue(field).asInt();
                         Log.e("History", "\tField: " + field.getName() +
                                 " Value: " + dataPoint.getValue(field));
                     }

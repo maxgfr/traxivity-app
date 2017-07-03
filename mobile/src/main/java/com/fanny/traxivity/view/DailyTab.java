@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.fanny.traxivity.MainActivity;
 import com.fanny.traxivity.database.activity.ActivityManager;
 import com.fanny.traxivity.database.activity.DbActivity;
 import com.fanny.traxivity.database.dayTiming.DbTiming;
@@ -139,6 +140,7 @@ public class DailyTab extends Fragment {
                 public void onClick(View v) {
                     if (dailyCircle.getUnit().equals(" %")) {
                         updateCircleStepsText();
+                        MainActivity.refresh();
                     } else {
                         updateCircleStepsPercent();
                     }

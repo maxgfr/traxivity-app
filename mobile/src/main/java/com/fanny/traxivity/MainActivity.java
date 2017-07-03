@@ -82,14 +82,15 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_OAUTH = 1;
     private static final String AUTH_PENDING = "auth_state_pending";
     private boolean authInProgress = false;
-    private GoogleApiClient mApiClient;
+    public static GoogleApiClient mApiClient;
+    public static String PACKAGE_NAME;
 
     private DatabaseReference mDataBase;
     private CharSequence Titles[]={"Day","Week","Month"};
     private String usernameString, emailString;
     private TextView username, email;
 
-    private ViewPagerAdapter adapter;
+    private static ViewPagerAdapter adapter;
 
     private int gStepCount = 0;
 
@@ -98,19 +99,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Fitness.HISTORY_API)
-                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ))
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                //.enableAutoManage()
-                .build();
-
-        mApiClient.connect();
-
-        new ViewWeekTask().execute(mApiClient);
-        new ViewMonthTask().execute(mApiClient);
-        new ViewHourPerDay().execute(mApiClient);
+        PACKAGE_NAME = getApplicationContext().getPackageName();
 
         Realm.init(this);
 
@@ -193,7 +182,22 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        refresh ();
+        mApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Fitness.HISTORY_API)
+                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ))
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                //.enableAutoManage()
+                .build();
+
+        mApiClient.connect();
+
+        new ViewWeekTask().execute(mApiClient);
+        new ViewMonthTask().execute(mApiClient);
+        new ViewHourPerDay().execute(mApiClient);
+
+
+        //refresh ();
     }
 
     public void createFolder(String nameFolder) {
@@ -285,7 +289,7 @@ public class MainActivity extends AppCompatActivity
         }, 0, 30000);
     }
 
-    public void refresh () {
+    public static void refresh () {
         Timer timer = new Timer();
 
         timer.schedule(new TimerTask() {
@@ -293,7 +297,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 adapter.refreshWeeklyTab();
             }
-        }, 10000, 25000);
+        }, 25000, 25000);
     }
     @Override
     public void onConnectionSuspended(int i) {
