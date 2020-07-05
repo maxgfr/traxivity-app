@@ -1,2 +1,3 @@
-# Traxivity
+# traxivity-app
+
 RGU Selfback application
